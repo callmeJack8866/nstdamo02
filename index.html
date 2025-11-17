@@ -2,737 +2,957 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>NST - 订单 & 交易记录 Demo</title>
+  <title>NST Finance – 非标未来 · 去中心化非标风险平台</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- 网站图标（浏览器标签上的小图标） -->
-  <link rel="icon" type="image/png" href="/nst-logo.png" />
-
-  <!-- Tailwind 用于 UI 样式 -->
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- ethers.js 用于连接钱包 & 调用合约 -->
-  <script src="https://cdn.jsdelivr.net/npm/ethers@6.10.0/dist/ethers.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50:  '#ecfeff',
+              100: '#cffafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8'
+            },
+            dark: {
+              900: '#030712',
+              800: '#020617'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at top, rgba(56,189,248,0.25), transparent 55%),
+                  radial-gradient(circle at bottom, rgba(129,140,248,0.25), transparent 55%),
+                  #020617;
+      color: #e5e7eb;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    }
+    .glass {
+      background: rgba(15,23,42,0.85);
+      border: 1px solid rgba(148,163,184,0.25);
+      backdrop-filter: blur(20px);
+    }
+    .gradient-border {
+      position: relative;
+    }
+    .gradient-border::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 1.25rem;
+      padding: 1px;
+      background: linear-gradient(135deg, #22d3ee, #6366f1, #f97316);
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .hero-grid {
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.15), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(129,140,248,0.2), transparent 55%);
+    }
+    .badge-dot {
+      box-shadow: 0 0 20px rgba(52,211,153,0.7);
+    }
+    /* 订单大厅滚动条优化（可选） */
+    .scrollbar-thin::-webkit-scrollbar {
+      height: 6px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background: rgba(15,23,42,0.8);
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background: rgba(51,65,85,0.9);
+      border-radius: 9999px;
+    }
+  </style>
 </head>
+<body class="min-h-screen text-slate-100">
 
-<body class="bg-slate-950 text-slate-50 min-h-screen">
   <!-- 顶部导航 -->
-  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+  <header class="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 lg:px-0">
+      <!-- logo -->
       <div class="flex items-center gap-2">
-<div class="h-14 w-14 rounded-2xl bg-slate-900 flex items-center justify-center overflow-hidden shadow-lg shadow-cyan-500/30">
-  <img src="./nst-logo.png" alt="NST" class="h-full w-full object-cover" />
-</div>
-
-
+        <div class="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 shadow-lg shadow-blue-500/40">
+          <span class="text-lg font-bold tracking-tight">N</span>
+        </div>
         <div>
-          <div class="font-semibold text-sm">NST Finance</div>
-          <div class="text-[11px] text-slate-400">
-            Non-Standard OTC · Orders & History Demo
+          <div class="text-sm font-semibold uppercase tracking-[0.2em] text-slate-300">
+            NST FINANCE
+          </div>
+          <div class="text-xs text-slate-400">
+            非标未来 · Non-Standard Future
           </div>
         </div>
       </div>
-      <div class="flex items-center gap-3 text-xs">
-        <div class="hidden sm:flex flex-col items-end">
-          <span class="text-slate-400">当前钱包</span>
-          <span class="font-mono text-[11px] text-slate-200" id="currentWallet">
-            0x1234...ABCD
-          </span>
+
+      <!-- nav links (desktop) -->
+      <nav class="hidden items-center gap-6 text-sm text-slate-300 md:flex">
+        <a href="#how" class="hover:text-white">如何运作</a>
+        <a href="#order-hall" class="hover:text-white">订单大厅</a>
+        <a href="#products" class="hover:text-white">产品场景</a>
+        <a href="#why" class="hover:text-white">我们的优势</a>
+        <a href="#community" class="hover:text-white">社区</a>
+        <a href="#faq" class="hover:text-white">常见问题</a>
+      </nav>
+
+      <!-- 右侧：多国语言 + CTA -->
+      <div class="hidden items-center gap-3 md:flex">
+        <!-- 多国语言选择 -->
+        <div class="relative">
+          <select
+            class="appearance-none rounded-full border border-slate-700/80 bg-slate-900/90 px-3 pr-7 py-1.5 text-xs text-slate-200 focus:outline-none"
+          >
+            <option value="zh">简体中文</option>
+            <option value="en">English</option>
+            <option value="th">ภาษาไทย</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-1 flex items-center">
+            <svg class="h-3 w-3 text-slate-400" viewBox="0 0 20 20" fill="none">
+              <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </div>
         </div>
-        <button
-          class="px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-[11px] hover:border-cyan-400"
-          onclick="connectWallet()"
-        >
-          💳 Connect Wallet
+
+        <button class="rounded-full border border-slate-600/70 px-4 py-1.5 text-xs font-medium text-slate-300 hover:border-slate-400 hover:text-white">
+          文档
+        </button>
+        <button class="rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 px-4 py-1.5 text-xs font-semibold text-slate-950 shadow-lg shadow-blue-500/40">
+          连接钱包
         </button>
       </div>
+
+      <!-- mobile menu button -->
+      <button id="mobileMenuBtn" class="inline-flex items-center justify-center rounded-full border border-slate-700 p-1.5 md:hidden">
+        <span class="sr-only">Open menu</span>
+        <svg class="h-5 w-5 text-slate-200" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h10M4 17h16" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- mobile menu -->
+    <div id="mobileMenu" class="glass mx-4 mt-2 hidden rounded-2xl border border-slate-800/80 px-4 py-3 text-sm md:hidden">
+      <nav class="flex flex-col gap-3 text-slate-200">
+        <a href="#how">如何运作</a>
+        <a href="#order-hall">订单大厅</a>
+        <a href="#products">产品场景</a>
+        <a href="#why">我们的优势</a>
+        <a href="#community">社区</a>
+        <a href="#faq">常见问题</a>
+
+        <div class="mt-3 flex items-center gap-2">
+          <!-- 简化版多语言 -->
+          <select class="flex-1 rounded-full border border-slate-700/80 bg-slate-900/90 px-3 py-1.5 text-xs text-slate-200">
+            <option value="zh">简体中文</option>
+            <option value="en">English</option>
+            <option value="th">ภาษาไทย</option>
+          </select>
+        </div>
+
+        <div class="mt-3 flex gap-2">
+          <button class="flex-1 rounded-full border border-slate-700 px-3 py-1.5 text-xs">
+            文档
+          </button>
+          <button class="flex-1 rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 px-3 py-1.5 text-xs font-semibold text-slate-950">
+            连接钱包
+          </button>
+        </div>
+      </nav>
     </div>
   </header>
 
-  <!-- 页面主体 -->
-  <main class="max-w-6xl mx-auto px-4 py-6 space-y-4">
-    <!-- 顶部标签：三个视角 -->
-    <section>
-      <div class="flex flex-wrap gap-2 text-xs">
-        <button
-          class="view-tab px-3 py-1.5 rounded-full border border-cyan-500 bg-cyan-500/10"
-          data-view="my-trades"
-          onclick="switchView('my-trades', this)"
-        >
-          👤 我的交易记录（客户视角）
-        </button>
-        <button
-          class="view-tab px-3 py-1.5 rounded-full border border-slate-700 bg-slate-900 hover:border-cyan-400"
-          data-view="order-detail"
-          onclick="switchView('order-detail', this)"
-        >
-          📄 订单详情视角
-        </button>
-        <button
-          class="view-tab px-3 py-1.5 rounded-full border border-slate-700 bg-slate-900 hover:border-cyan-400"
-          data-view="rater"
-          onclick="switchView('rater', this)"
-        >
-          🧮 报价员视角（待喂价订单）
-        </button>
-      </div>
-      <p class="mt-2 text-[11px] text-slate-500">
-        本页当前仍使用假数据，用于演示「没有服务器时，DApp 如何从链上读数据并按不同视角展示」的 UI 结构。
-        <br />
-        未来接入智能合约后，只需要在脚本中填入 <span class="text-cyan-300">CONTRACT_ADDRESS / CONTRACT_ABI / loadOrdersFromChain()</span> 即可切换为真实链上数据。
-      </p>
-    </section>
+  <!-- 主体 -->
+  <main class="mx-auto max-w-6xl px-4 pb-16 pt-10 lg:px-0 lg:pt-14">
 
-    <!-- 视角 A：我的交易记录 -->
-    <section id="view-my-trades" class="space-y-3">
-      <h2 class="text-sm font-semibold">👤 我的交易记录（按当前钱包过滤）</h2>
-      <!-- 筛选 Tabs -->
-      <div class="flex flex-wrap gap-2 text-xs">
-        <button class="filter-tab px-3 py-1.5 rounded-full bg-slate-800 border border-cyan-500"
-                data-status="all" onclick="setMyTradesFilter('all', this)">
-          全部
-        </button>
-        <button class="filter-tab px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-cyan-400"
-                data-status="open" onclick="setMyTradesFilter('open', this)">
-          进行中（挂单/已成交）
-        </button>
-        <button class="filter-tab px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-cyan-400"
-                data-status="settled" onclick="setMyTradesFilter('settled', this)">
-          已结算
-        </button>
-        <button class="filter-tab px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-cyan-400"
-                data-status="cancelled" onclick="setMyTradesFilter('cancelled', this)">
-          已取消
-        </button>
-      </div>
-
-      <!-- 记录列表 -->
-      <div id="myTradesList" class="space-y-2 text-xs">
-        <!-- JS 渲染 -->
-      </div>
-    </section>
-
-    <!-- 视角 B：订单详情视角 -->
-    <section id="view-order-detail" class="space-y-3 hidden">
-      <h2 class="text-sm font-semibold">📄 订单详情（包含结算 & 报价记录）</h2>
-      <p class="text-[11px] text-slate-500">
-        在真实 DApp 中，这一页可以从「我的交易」「订单大厅」点击某个订单行跳转过来。这里用假数据模拟其中一个订单。
-      </p>
-
-      <!-- 选择订单下拉（用于切换查看哪一个） -->
-      <div class="text-xs space-y-1">
-        <label class="text-slate-300">选择要查看的订单：</label>
-        <select id="detailOrderSelect"
-                class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-xs"
-                onchange="renderOrderDetail(parseInt(this.value))">
-          <!-- JS 添加选项 -->
-        </select>
-      </div>
-
-      <div class="grid gap-3 md:grid-cols-2 text-xs">
-        <!-- 左：订单基础信息 -->
-        <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-3 space-y-2">
-          <h3 class="font-semibold text-sm mb-1">订单信息</h3>
-          <div id="detailOrderInfo" class="space-y-1">
-            <!-- JS 渲染 -->
-          </div>
+    <!-- HERO 区 -->
+    <section class="relative hero-grid overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-950/70 px-6 py-10 shadow-2xl shadow-blue-900/60 lg:flex lg:items-center lg:gap-10 lg:px-10 lg:py-14">
+      <!-- 左 -->
+      <div class="relative z-10 max-w-xl space-y-6">
+        <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-2.5 py-1 text-xs text-emerald-200">
+          <span class="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400 badge-dot"></span>
+          已部署于 BNB Chain · 合约审计中 / 可扩展至多链
         </div>
 
-        <!-- 右：结算信息 -->
-        <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-3 space-y-2">
-          <h3 class="font-semibold text-sm mb-1">结算 / 盈亏（示例）</h3>
-          <div id="detailSettleInfo" class="space-y-1">
-            <!-- JS 渲染 -->
+        <h1 class="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-5xl">
+          非标风险的新一代基础设施
+          <span class="block bg-gradient-to-r from-cyan-300 via-sky-400 to-indigo-400 bg-clip-text text-transparent">
+            买方自定义 · 卖方竞价 · 全链上结算
+          </span>
+        </h1>
+
+        <p class="max-w-lg text-sm leading-relaxed text-slate-300 sm:text-base">
+          NST Finance 让场外期权、私募股权、房地产收益权等「非标资产」可以被自定义、撮合和清算。
+          全流程上链，保证金、订单、结算逻辑全部公开透明，让买卖双方在规则清晰的环境下公平博弈。
+        </p>
+
+        <!-- CTA & 小字 -->
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <button class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-blue-500/40">
+            启动测试网 DApp
+          </button>
+          <button class="inline-flex items-center justify-center rounded-full border border-slate-600/80 px-5 py-2.5 text-sm font-medium text-slate-200 hover:border-slate-400 hover:text-white">
+            查看 2 分钟介绍视频
+          </button>
+        </div>
+
+        <div class="flex flex-wrap gap-6 pt-2 text-xs text-slate-400 sm:text-sm">
+          <div>
+            <div class="text-slate-200">100% 链上可验证</div>
+            <div>保证金、订单、结算路径全部可查</div>
+          </div>
+          <div>
+            <div class="text-slate-200">询价零 Gas</div>
+            <div>仅在成交时支付链上费用</div>
+          </div>
+          <div>
+            <div class="text-slate-200">NST 代币深度绑定</div>
+            <div>质押提升收益与排序权</div>
           </div>
         </div>
       </div>
 
-      <!-- 报价记录 -->
-      <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-3 text-xs space-y-2">
-        <div class="flex items-center justify-between">
-          <h3 class="font-semibold text-sm">报价员喂价记录</h3>
-          <span class="text-[11px] text-slate-400">真实环境中来自 feeds[orderId]</span>
-        </div>
-        <div id="detailFeedsList" class="space-y-1">
-          <!-- JS 渲染 -->
-        </div>
-      </div>
-    </section>
+      <!-- 右：发光卡片/仪表盘示意 -->
+      <div class="relative mt-10 flex-1 lg:mt-0">
+        <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-cyan-400/20 blur-3xl"></div>
+        <div class="absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-indigo-500/30 blur-3xl"></div>
 
-    <!-- 视角 C：报价员视角 -->
-    <section id="view-rater" class="space-y-3 hidden">
-      <h2 class="text-sm font-semibold">🧮 报价员视角（待喂价的订单）</h2>
-      <p class="text-[11px] text-slate-500">
-        这个视图只显示「状态为已成交，但尚未结算」且当前在报价窗口中的订单，方便报价员集中处理。
-      </p>
-
-      <div id="raterOrdersList" class="space-y-2 text-xs">
-        <!-- JS 渲染 -->
-      </div>
-    </section>
-  </main>
-
-  <script>
-    // ======================================================
-    // 1. 预留合约信息：将来你有真实合约后只改这里
-    // ======================================================
-
-    // TODO：部署合约后，把真实地址填到这里
-    const CONTRACT_ADDRESS = "0x你的合约地址";
-
-    // TODO：把你的智能合约 ABI JSON 粘贴到这里
-    const CONTRACT_ABI = [
-      // 示例（伪代码）：等你合约结构确定后再填
-      // "function getOrdersByUser(address user) view returns (tuple(uint256 id,string symbol,string nameZh,uint256 notional,string side,address buyer,address seller,uint256 strike,uint256 feeRate,uint8 status,uint256 settlePrice,int256 pnlBuyer,int256 pnlSeller)[])",
-    ];
-
-    let provider = null;
-    let signer   = null;
-    let contract = null;
-    let currentUser = null; // 真实连接的钱包地址
-
-    // Demo 模式下的默认钱包（没连接时用它来过滤假数据）
-    const demoUser = "0x1234...ABCD";
-
-    // ======================================================
-    // 2. 订单状态枚举
-    // ======================================================
-
-    const OrderStatus = {
-      OPEN: "Open",         // 挂单中
-      FILLED: "Filled",     // 已成交，待结算
-      SETTLED: "Settled",   // 已结算
-      CANCELLED: "Cancelled"
-    };
-
-    // ======================================================
-    // 3. 假数据：当前用前端模拟链上数据
-    // ======================================================
-
-    let orders = [
-      {
-        id: 1,
-        symbol: "600519.SH",
-        nameZh: "贵州茅台",
-        notional: 1000000,
-        side: "买涨",
-        buyer: demoUser,
-        seller: "0xSELLER-0001",
-        strike: 1650,
-        feeRate: 0.015,
-        createdAt: "2025-11-01 10:23",
-        expiredAt: "2025-11-10",
-        status: OrderStatus.SETTLED,
-        settlePrice: 1720,
-        pnlBuyer: 50000,
-        pnlSeller: -50000
-      },
-      {
-        id: 2,
-        symbol: "AAPL.O",
-        nameZh: "苹果公司",
-        notional: 500000,
-        side: "买跌",
-        buyer: "0xUSER-OTHER",
-        seller: demoUser,
-        strike: 180,
-        feeRate: 0.012,
-        createdAt: "2025-11-02 14:11",
-        expiredAt: "2025-11-09",
-        status: OrderStatus.FILLED,
-        settlePrice: null,
-        pnlBuyer: null,
-        pnlSeller: null
-      },
-      {
-        id: 3,
-        symbol: "TSLA.O",
-        nameZh: "特斯拉",
-        notional: 300000,
-        side: "买涨",
-        buyer: demoUser,
-        seller: "0xSELLER-0002",
-        strike: 250,
-        feeRate: 0.02,
-        createdAt: "2025-11-03 09:00",
-        expiredAt: "2025-11-15",
-        status: OrderStatus.OPEN,
-        settlePrice: null,
-        pnlBuyer: null,
-        pnlSeller: null
-      },
-      {
-        id: 4,
-        symbol: "BTCUSDT",
-        nameZh: "比特币永续",
-        notional: 200000,
-        side: "买跌",
-        buyer: "0xUSER-OTHER2",
-        seller: demoUser,
-        strike: 70000,
-        feeRate: 0.018,
-        createdAt: "2025-11-04 16:45",
-        expiredAt: "2025-11-06",
-        status: OrderStatus.CANCELLED,
-        settlePrice: null,
-        pnlBuyer: null,
-        pnlSeller: null
-      }
-    ];
-
-    let feeds = {
-      1: [
-        {
-          feeder: "0xRATER-0001",
-          price: 1720,
-          agree: true,
-          comment: "参考上交所收盘价",
-          timestamp: "2025-11-10 15:05"
-        },
-        {
-          feeder: "0xRATER-0002",
-          price: 1718,
-          agree: true,
-          comment: "Wind 收盘加滑点",
-          timestamp: "2025-11-10 15:06"
-        }
-      ],
-      2: [
-        {
-          feeder: "0xRATER-0003",
-          price: 176,
-          agree: true,
-          comment: "纳斯达克收盘",
-          timestamp: "2025-11-09 04:01"
-        }
-      ]
-    };
-
-    // ======================================================
-    // 4. 连接钱包（MetaMask）
-    // ======================================================
-
-    async function connectWallet() {
-      try {
-        if (!window.ethereum) {
-          alert("请先安装 MetaMask 或其他 Web3 钱包插件");
-          return;
-        }
-
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-
-        if (!accounts || accounts.length === 0) {
-          alert("没有可用的钱包账户");
-          return;
-        }
-
-        currentUser = ethers.getAddress(accounts[0]);
-        provider    = new ethers.BrowserProvider(window.ethereum);
-        signer      = await provider.getSigner();
-
-        // 如果已填入合约信息，则实例化合约（现在可以先不填，保持 null）
-        if (CONTRACT_ADDRESS !== "0x你的合约地址" && CONTRACT_ABI.length > 0) {
-          contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-        }
-
-        const short = currentUser.slice(0, 6) + "..." + currentUser.slice(-4);
-        document.getElementById("currentWallet").textContent = short;
-
-        // 将来改为：从合约读取当前钱包相关订单
-        await loadOrdersFromChain();
-
-        // 重新渲染视图
-        renderMyTrades();
-        initDetailOrderSelect();
-        if (orders.length > 0) renderOrderDetail(orders[0].id);
-        renderRaterView();
-
-        // alert("钱包已连接：" + currentUser);
-      } catch (err) {
-        console.error(err);
-        alert("连接钱包失败：" + (err.message || err));
-      }
-    }
-
-    // ======================================================
-    // 5. 预留：从链上加载订单（未来接合约时改这里）
-    // ======================================================
-
-    async function loadOrdersFromChain() {
-      // 现在先不动，继续用前端假数据。
-      // 未来你可以参考下面的伪代码来改：
-
-      /*
-      if (!contract || !currentUser) return;
-
-      const rawOrders = await contract.getOrdersByUser(currentUser);
-
-      orders = rawOrders.map(o => ({
-        id: Number(o.id),
-        symbol: o.symbol,
-        nameZh: o.nameZh,
-        notional: Number(o.notional),
-        side: o.side,
-        buyer: o.buyer,
-        seller: o.seller,
-        strike: Number(o.strike),
-        feeRate: Number(o.feeRate) / 1e4, // 举例，根据你合约内部存储的精度来定
-        createdAt: formatTimestamp(o.createdAt),
-        expiredAt: formatTimestamp(o.expiredAt),
-        status: mapStatus(o.status),
-        settlePrice: o.settlePrice ? Number(o.settlePrice) : null,
-        pnlBuyer: o.pnlBuyer ? Number(o.pnlBuyer) : null,
-        pnlSeller: o.pnlSeller ? Number(o.pnlSeller) : null,
-      }));
-      */
-    }
-
-    function formatTimestamp(ts) {
-      const d = new Date(Number(ts) * 1000);
-      const pad = n => (n < 10 ? "0" + n : n);
-      return (
-        d.getFullYear() + "-" +
-        pad(d.getMonth() + 1) + "-" +
-        pad(d.getDate()) + " " +
-        pad(d.getHours()) + ":" +
-        pad(d.getMinutes())
-      );
-    }
-
-    function mapStatus(s) {
-      // 将来合约里可能是 0/1/2/3 的枚举，这里映射到前端字符串
-      if (s === 0) return OrderStatus.OPEN;
-      if (s === 1) return OrderStatus.FILLED;
-      if (s === 2) return OrderStatus.SETTLED;
-      if (s === 3) return OrderStatus.CANCELLED;
-      return OrderStatus.OPEN;
-    }
-
-    // ======================================================
-    // 6. 视图切换
-    // ======================================================
-
-    function switchView(viewId, btn) {
-      document.querySelectorAll('[id^="view-"]').forEach(sec => {
-        sec.classList.add("hidden");
-      });
-      document.getElementById("view-" + viewId).classList.remove("hidden");
-
-      document.querySelectorAll(".view-tab").forEach(b => {
-        b.classList.remove("border-cyan-500", "bg-cyan-500/10");
-        b.classList.add("border-slate-700", "bg-slate-900");
-      });
-      btn.classList.remove("border-slate-700", "bg-slate-900");
-      btn.classList.add("border-cyan-500", "bg-cyan-500/10");
-    }
-
-    // ======================================================
-    // 7. 我的交易记录视角
-    // ======================================================
-
-    let myTradesFilter = "all";
-
-    function setMyTradesFilter(status, btn) {
-      myTradesFilter = status;
-      document.querySelectorAll(".filter-tab").forEach(b => {
-        b.classList.remove("border-cyan-500");
-        b.classList.add("border-slate-700");
-      });
-      btn.classList.remove("border-slate-700");
-      btn.classList.add("border-cyan-500");
-      renderMyTrades();
-    }
-
-    function renderMyTrades() {
-      const container = document.getElementById("myTradesList");
-      container.innerHTML = "";
-
-      const user = currentUser || demoUser;
-
-      const myOrders = orders.filter(
-        o => o.buyer === user || o.seller === user
-      );
-
-      const filtered = myOrders.filter(o => {
-        if (myTradesFilter === "all") return true;
-        if (myTradesFilter === "open") {
-          return o.status === OrderStatus.OPEN || o.status === OrderStatus.FILLED;
-        }
-        if (myTradesFilter === "settled") {
-          return o.status === OrderStatus.SETTLED;
-        }
-        if (myTradesFilter === "cancelled") {
-          return o.status === OrderStatus.CANCELLED;
-        }
-        return true;
-      });
-
-      if (filtered.length === 0) {
-        container.innerHTML =
-          '<div class="text-[11px] text-slate-500">当前筛选条件下，没有找到交易记录。</div>';
-        return;
-      }
-
-      filtered.forEach(o => {
-        const role = o.buyer === user ? "买方" : "卖方";
-        const roleColor =
-          role === "买方" ? "text-emerald-300" : "text-sky-300";
-
-        const statusLabel = {
-          [OrderStatus.OPEN]: "挂单中",
-          [OrderStatus.FILLED]: "已成交·待结算",
-          [OrderStatus.SETTLED]: "已结算",
-          [OrderStatus.CANCELLED]: "已取消"
-        }[o.status];
-
-        const statusColor = {
-          [OrderStatus.OPEN]: "bg-slate-800 text-slate-100",
-          [OrderStatus.FILLED]: "bg-amber-500/10 text-amber-300 border-amber-500/40",
-          [OrderStatus.SETTLED]: "bg-emerald-500/10 text-emerald-300 border-emerald-500/40",
-          [OrderStatus.CANCELLED]: "bg-slate-800 text-slate-400"
-        }[o.status];
-
-        const pnlText =
-          o.status === OrderStatus.SETTLED && o.buyer === user
-            ? `买方盈亏：${formatPnL(o.pnlBuyer)}`
-            : o.status === OrderStatus.SETTLED && o.seller === user
-            ? `卖方盈亏：${formatPnL(o.pnlSeller)}`
-            : "尚未结算";
-
-        const div = document.createElement("div");
-        div.className =
-          "bg-slate-900/70 border border-slate-800 rounded-xl p-3 flex flex-col gap-1 hover:border-cyan-500/40 cursor-pointer";
-        div.onclick = () => {
-          const detailTab = document.querySelector(
-            '.view-tab[data-view="order-detail"]'
-          );
-          switchView("order-detail", detailTab);
-          document.getElementById("detailOrderSelect").value = o.id;
-          renderOrderDetail(o.id);
-        };
-        div.innerHTML = `
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="font-mono text-[11px] text-slate-400">#${o.id}</span>
-              <span class="text-xs font-semibold">${o.nameZh}</span>
-              <span class="text-[11px] text-slate-400">${o.symbol}</span>
-              <span class="text-[11px] px-2 py-0.5 rounded-full border ${statusColor}">
-                ${statusLabel}
-              </span>
-            </div>
-            <span class="text-[11px] text-slate-400">${o.createdAt}</span>
-          </div>
-          <div class="flex items-center justify-between text-[11px]">
-            <div class="flex flex-col gap-0.5">
-              <span>方向：<span class="text-slate-100">${o.side}</span> · <span class="${roleColor}">${role}</span></span>
-              <span>名义本金：<span class="text-slate-100">${fmt(o.notional)} THB（示例）</span></span>
-              <span>校验价格：<span class="text-slate-100">${o.strike}</span></span>
-            </div>
-            <div class="flex flex-col items-end gap-0.5">
-              <span>费率：<span class="text-slate-100">${(o.feeRate * 100).toFixed(1)}%</span></span>
-              <span>${pnlText}</span>
-              <span class="text-slate-500">到期日：${o.expiredAt}</span>
-            </div>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function fmt(n) {
-      return n.toLocaleString("zh-CN");
-    }
-
-    function formatPnL(x) {
-      if (x == null) return "—";
-      const v = Number(x);
-      if (v > 0) return `+${fmt(v)}`;
-      if (v < 0) return `-${fmt(Math.abs(v))}`;
-      return "0";
-    }
-
-    // ======================================================
-    // 8. 订单详情视角
-    // ======================================================
-
-    function initDetailOrderSelect() {
-      const sel = document.getElementById("detailOrderSelect");
-      sel.innerHTML = "";
-      orders.forEach(o => {
-        const opt = document.createElement("option");
-        opt.value = o.id;
-        opt.textContent = `#${o.id} · ${o.nameZh} · ${o.symbol}`;
-        sel.appendChild(opt);
-      });
-    }
-
-    function renderOrderDetail(orderId) {
-      const o = orders.find(x => x.id === orderId);
-      if (!o) return;
-
-      const infoDiv = document.getElementById("detailOrderInfo");
-      const settleDiv = document.getElementById("detailSettleInfo");
-      const feedsDiv = document.getElementById("detailFeedsList");
-
-      const statusLabel = {
-        [OrderStatus.OPEN]: "挂单中",
-        [OrderStatus.FILLED]: "已成交·待结算",
-        [OrderStatus.SETTLED]: "已结算",
-        [OrderStatus.CANCELLED]: "已取消"
-      }[o.status];
-
-      infoDiv.innerHTML = `
-        <div>订单号：<span class="font-mono text-slate-100">#${o.id}</span></div>
-        <div>标的：<span class="text-slate-100">${o.nameZh}</span>（${o.symbol}）</div>
-        <div>方向：<span class="text-slate-100">${o.side}</span></div>
-        <div>名义本金：<span class="text-slate-100">${fmt(o.notional)}</span></div>
-        <div>校验价格：<span class="text-slate-100">${o.strike}</span></div>
-        <div>费率：<span class="text-slate-100">${(o.feeRate * 100).toFixed(1)}%</span></div>
-        <div>买方地址：<span class="font-mono text-[11px] text-slate-300">${o.buyer}</span></div>
-        <div>卖方地址：<span class="font-mono text-[11px] text-slate-300">${o.seller}</span></div>
-        <div>创建时间：<span class="text-slate-300">${o.createdAt}</span></div>
-        <div>到期时间：<span class="text-slate-300">${o.expiredAt}</span></div>
-        <div>订单状态：<span class="text-slate-100">${statusLabel}</span></div>
-      `;
-
-      if (o.status === OrderStatus.SETTLED) {
-        settleDiv.innerHTML = `
-          <div>结算价格：<span class="text-emerald-300">${o.settlePrice}</span></div>
-          <div>买方盈亏：<span class="text-emerald-300">${formatPnL(o.pnlBuyer)}</span></div>
-          <div>卖方盈亏：<span class="text-rose-300">${formatPnL(o.pnlSeller)}</span></div>
-          <div class="text-[11px] text-slate-500 mt-1">
-            注：盈亏由保证金合约在结算时自动扣/返，前端只是读取结果显示。
-          </div>
-        `;
-      } else if (o.status === OrderStatus.FILLED) {
-        settleDiv.innerHTML = `
-          <div>结算价格：<span class="text-slate-300">尚未结算</span></div>
-          <div>买方盈亏：<span class="text-slate-300">待结算</span></div>
-          <div>卖方盈亏：<span class="text-slate-300">待结算</span></div>
-          <div class="text-[11px] text-amber-300 mt-1">
-            当前订单已成交，等待报价员喂价并完成结算。
-          </div>
-        `;
-      } else {
-        settleDiv.innerHTML = `
-          <div>结算价格：<span class="text-slate-300">—</span></div>
-          <div>买方盈亏：<span class="text-slate-300">—</span></div>
-          <div>卖方盈亏：<span class="text-slate-300">—</span></div>
-          <div class="text-[11px] text-slate-500 mt-1">
-            仅在订单状态为「已结算」时才会有结算信息。
-          </div>
-        `;
-      }
-
-      const f = feeds[orderId] || [];
-      feedsDiv.innerHTML = "";
-      if (f.length === 0) {
-        feedsDiv.innerHTML =
-          '<div class="text-[11px] text-slate-500">当前订单暂无报价记录。</div>';
-      } else {
-        f.forEach(rec => {
-          const item = document.createElement("div");
-          item.className =
-            "border border-slate-800 rounded-lg px-3 py-2 flex flex-col gap-0.5";
-          item.innerHTML = `
-            <div class="flex items-center justify-between">
-              <span class="font-mono text-[11px] text-slate-300">${rec.feeder}</span>
-              <span class="text-[11px] text-slate-400">${rec.timestamp}</span>
-            </div>
-            <div>喂价：<span class="text-slate-100">${rec.price}</span></div>
-            <div>态度：<span class="${rec.agree ? "text-emerald-300" : "text-rose-300"}">
-              ${rec.agree ? "同意结算" : "存在异议"}
-            </span></div>
-            <div class="text-[11px] text-slate-400">备注：${rec.comment}</div>
-          `;
-          feedsDiv.appendChild(item);
-        });
-      }
-    }
-
-    // ======================================================
-    // 9. 报价员视角
-    // ======================================================
-
-    function renderRaterView() {
-      const container = document.getElementById("raterOrdersList");
-      container.innerHTML = "";
-
-      const pending = orders.filter(o => o.status === OrderStatus.FILLED);
-
-      if (pending.length === 0) {
-        container.innerHTML =
-          '<div class="text-[11px] text-slate-500">当前没有需要报价的订单。</div>';
-        return;
-      }
-
-      pending.forEach(o => {
-        const div = document.createElement("div");
-        const feedForThisOrder = feeds[o.id] || [];
-
-        div.className =
-          "bg-slate-900/70 border border-slate-800 rounded-xl p-3 space-y-2";
-
-        div.innerHTML = `
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="font-mono text-[11px] text-slate-400">#${o.id}</span>
-              <span class="text-xs font-semibold">${o.nameZh}</span>
-              <span class="text-[11px] text-slate-400">${o.symbol}</span>
-              <span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/40">
-                已成交·待报价
-              </span>
-            </div>
-            <span class="text-[11px] text-slate-400">到期：${o.expiredAt}</span>
-          </div>
-          <div class="flex items-center justify-between text-[11px]">
-            <div class="flex flex-col gap-0.5">
-              <span>方向：<span class="text-slate-100">${o.side}</span></span>
-              <span>名义本金：<span class="text-slate-100">${fmt(o.notional)}</span></span>
-              <span>校验价格：<span class="text-slate-100">${o.strike}</span></span>
-            </div>
-            <div class="flex flex-col items-end gap-0.5">
-              <span>已有报价记录：<span class="text-slate-100">${feedForThisOrder.length}</span> 条</span>
-              <span class="text-slate-500">上次报价时间：${
-                feedForThisOrder.length
-                  ? feedForThisOrder[feedForThisOrder.length - 1].timestamp
-                  : "—"
-              }</span>
-            </div>
-          </div>
-          <div class="mt-2 flex flex-col gap-1 text-[11px]">
-            <label>作为报价员，在此输入你建议的结算价格（Demo，不上链）：</label>
-            <div class="flex gap-2">
-              <input type="number" min="0" step="0.01"
-                    placeholder="例如：176.50"
-                    class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-cyan-400" />
-              <button
-                class="px-3 py-1 rounded-lg bg-cyan-500 text-slate-950 text-[11px] font-semibold hover:bg-cyan-400"
-                onclick="alert('Demo：这里未来会调用 feedPrice(orderId, price, agree, comment) 写入链上')"
-              >
-                提交喂价（Demo）
+        <div class="relative glass gradient-border mx-auto max-w-md rounded-3xl border border-slate-700/80 p-4">
+          <!-- 顶部 tab -->
+          <div class="mb-3 flex items-center justify-between text-xs text-slate-400">
+            <div class="inline-flex items-center gap-1 rounded-full bg-slate-900/80 px-1 py-1">
+              <button class="rounded-full bg-slate-800 px-3 py-1 text-[11px] text-slate-100">
+                覆盖池概览
+              </button>
+              <button class="rounded-full px-3 py-1 text-[11px]">
+                我的仓位
               </button>
             </div>
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-1 text-[11px] text-emerald-300">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+              资金健康 · 无穿仓
+            </span>
           </div>
-        `;
-        container.appendChild(div);
+
+          <!-- 中间 stats -->
+          <div class="mb-4 grid grid-cols-3 gap-3 text-xs">
+            <div class="rounded-2xl bg-slate-900/80 p-3">
+              <div class="text-slate-400">池子总规模</div>
+              <div class="mt-1 text-sm font-semibold text-white">$42.6M</div>
+              <div class="mt-1 text-[11px] text-emerald-300">本月 +4.3%</div>
+            </div>
+            <div class="rounded-2xl bg-slate-900/80 p-3">
+              <div class="text-slate-400">在险订单数</div>
+              <div class="mt-1 text-sm font-semibold text-white">1,284</div>
+              <div class="mt-1 text-[11px] text-slate-400">平均期限 37 天</div>
+            </div>
+            <div class="rounded-2xl bg-slate-900/80 p-3">
+              <div class="text-slate-400">已质押 NST</div>
+              <div class="mt-1 text-sm font-semibold text-white">18.3M</div>
+              <div class="mt-1 text-[11px] text-cyan-300">当前 APY 23.7%</div>
+            </div>
+          </div>
+
+          <!-- Order list -->
+          <div class="mb-3 flex items-center justify-between text-xs text-slate-400">
+            <span>正在撮合的非标订单示例</span>
+            <span class="rounded-full bg-slate-900/80 px-2 py-0.5 text-[10px] text-slate-300">
+              报价实时刷新 · 3s
+            </span>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <!-- row -->
+            <div class="flex items-center justify-between rounded-2xl bg-slate-900/80 px-3 py-2.5">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] uppercase tracking-wider text-cyan-300">私募股权</span>
+                  <span class="rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300">
+                    OTC 看跌期权
+                  </span>
+                </div>
+                <div class="mt-0.5 text-[11px] text-slate-400">
+                  B 轮股份 12 个月清算底价保护
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs font-semibold text-slate-50">权利金 7.4%</div>
+                <div class="text-[10px] text-slate-400">LTV 62% · A- 评级</div>
+              </div>
+            </div>
+            <!-- row -->
+            <div class="flex items-center justify-between rounded-2xl bg-slate-900/80 px-3 py-2.5">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] uppercase tracking-wider text-indigo-300">房地产</span>
+                  <span class="rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300">
+                    租金保底
+                  </span>
+                </div>
+                <div class="mt-0.5 text-[11px] text-slate-400">
+                  曼谷联排 18 个月租金收入下限
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs font-semibold text-slate-50">权利金 4.1%</div>
+                <div class="text-[10px] text-slate-400">最大赔付 30% · BBB+</div>
+              </div>
+            </div>
+            <!-- row -->
+            <div class="flex items-center justify-between rounded-2xl bg-slate-900/80 px-3 py-2.5">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] uppercase tracking-wider text-fuchsia-300">结构性</span>
+                  <span class="rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300">
+                    区间策略
+                  </span>
+                </div>
+                <div class="mt-0.5 text-[11px] text-slate-400">
+                  DeFi TVL 指数 6 个月波动区间
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs font-semibold text-slate-50">权利金 9.8%</div>
+                <div class="text-[10px] text-slate-400">Delta 对冲 · A 级</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 底部按钮 -->
+          <div class="mt-4 flex items-center justify-between text-[11px] text-slate-300">
+            <span>3 步完成一张非标合约。</span>
+            <button class="inline-flex items-center gap-1 rounded-full bg-slate-50/90 px-3 py-1 text-[11px] font-semibold text-slate-900">
+              创建我的第一单
+              <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 合作/背书 -->
+    <section class="mt-10">
+      <div class="text-center text-xs uppercase tracking-[0.2em] text-slate-500">
+        构建于 / 集成生态
+      </div>
+      <div class="mt-4 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
+        <span class="rounded-full border border-slate-800 px-3 py-1.5">BNB Chain</span>
+        <span class="rounded-full border border-slate-800 px-3 py-1.5">Chainlink 预言机</span>
+        <span class="rounded-full border border-slate-800 px-3 py-1.5">OpenZeppelin 标准库</span>
+        <span class="rounded-full border border-slate-800 px-3 py-1.5">第三方安全审计</span>
+      </div>
+    </section>
+
+    <!-- 订单大厅 -->
+    <section id="order-hall" class="mt-16">
+      <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <h2 class="text-xl font-semibold text-white sm:text-2xl">
+            订单大厅 · 实时非标案例
+          </h2>
+          <p class="mt-2 max-w-xl text-sm text-slate-300">
+            买方发起自定义需求，卖方在区间内竞价，系统自动撮合与风控。下面是 5 个示例订单，展示 NST 的典型使用场景。
+          </p>
+        </div>
+        <div class="text-xs text-slate-400">
+          支持：场外期权 · CFD · 收益权 · 租金保底 · 自定义现金流
+        </div>
+      </div>
+
+      <!-- 横向滑动卡片（带滚动条） -->
+      <div class="mt-6 overflow-x-auto scrollbar-thin">
+        <div class="flex gap-4 min-w-full pb-2">
+          <!-- 每个订单卡片都设定固定最小宽度，保证横向滑动体验 -->
+          <!-- 案例 1 -->
+          <article class="glass min-w-[260px] max-w-xs flex-1 rounded-2xl border border-slate-800/80 p-4">
+            <div class="flex items-center justify-between text-xs">
+              <div class="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 px-2 py-1 text-[11px] text-cyan-300">
+                <span class="h-1.5 w-1.5 rounded-full bg-cyan-400"></span>
+                案例 #1 · 场外股权看跌
+              </div>
+              <span class="text-[11px] text-slate-400">订单号 #NS-2025-001</span>
+            </div>
+
+            <h3 class="mt-3 text-sm font-semibold text-white">
+              B 轮股份底价保护（12 个月）
+            </h3>
+            <p class="mt-2 text-xs text-slate-300">
+              买方为一家消费品牌的 B 轮股份做底价保护，若下一轮估值低于 20% 以上，触发赔付。
+            </p>
+
+            <dl class="mt-3 grid grid-cols-2 gap-2 text-[11px] text-slate-400">
+              <div>
+                <dt>名义本金</dt>
+                <dd class="text-sm font-semibold text-white">$1,000,000</dd>
+              </div>
+              <div>
+                <dt>期限</dt>
+                <dd class="text-sm font-semibold text-white">12 个月</dd>
+              </div>
+              <div>
+                <dt>买方期望权利金</dt>
+                <dd class="text-sm font-semibold text-emerald-300">5% - 8%</dd>
+              </div>
+              <div>
+                <dt>当前最低报价</dt>
+                <dd class="text-sm font-semibold text-cyan-300">7.2%</dd>
+              </div>
+            </dl>
+
+            <div class="mt-3 flex items-center justify-between text-[11px] text-slate-400">
+              <span>卖方保证金充足 · A- 级</span>
+              <button class="rounded-full border border-slate-700 px-3 py-1 text-[11px] text-slate-200 hover:border-slate-400 hover:text-white">
+                查看详情
+              </button>
+            </div>
+          </article>
+
+          <!-- 案例 2 -->
+          <article class="glass min-w-[260px] max-w-xs flex-1 rounded-2xl border border-slate-800/80 p-4">
+            <div class="flex items-center justify-between text-xs">
+              <div class="inline-flex items-center gap-2 rounded-full bg-indigo-500/10 px-2 py-1 text-[11px] text-indigo-300">
+                <span class="h-1.5 w-1.5 rounded-full bg-indigo-400"></span>
+                案例 #2 · 房地产租金保底
+              </div>
+              <span class="text-[11px] text-slate-400">订单号 #NS-2025-002</span>
+            </div>
+
+            <h3 class="mt-3 text-sm font-semibold text-white">
+              曼谷联排房 · 18 个月租金下限
+            </h3>
+            <p class="mt-2 text-xs text-slate-300">
+              买方锁定每月最低租金现金流，空置或租金下调时由卖方补足差额。
+            </p>
+
+            <dl class="mt-3 grid grid-cols-2 gap-2 text-[11px] text-slate-400">
+              <div>
+                <dt>目标年租金</dt>
+                <dd class="text-sm font-semibold text-white">฿ 180,000</dd>
+              </div>
+              <div>
+                <dt>保障比例</dt>
+                <dd class="text-sm font-semibold text-white">80% 下限</dd>
+              </div>
+              <div>
+                <dt>权利金区间</dt>
+                <dd class="text-sm font-semibold text-emerald-300">3% - 5%</dd>
+              </div>
+              <div>
+                <dt>当前竞价</dt>
+                <dd class="text-sm font-semibold text-cyan-300">4.3%</dd>
+              </div>
+            </dl>
+
+            <div class="mt-3 flex items-center justify-between text-[11px] text-slate-400">
+              <span>三家卖方联合承保 · BBB+</span>
+              <button class="rounded-full border border-slate-700 px-3 py-1 text-[11px] text-slate-200 hover:border-slate-400 hover:text-white">
+                作为卖方参与
+              </button>
+            </div>
+          </article>
+
+          <!-- 案例 3 -->
+          <article class="glass min-w-[260px] max-w-xs flex-1 rounded-2xl border border-slate-800/80 p-4">
+            <div class="flex items-center justify-between text-xs">
+              <div class="inline-flex items-center gap-2 rounded-full bg-fuchsia-500/10 px-2 py-1 text-[11px] text-fuchsia-300">
+                <span class="h-1.5 w-1.5 rounded-full bg-fuchsia-400"></span>
+                案例 #3 · DeFi TVL 区间
+              </div>
+              <span class="text-[11px] text-slate-400">订单号 #NS-2025-003</span>
+            </div>
+
+            <h3 class="mt-3 text-sm font-semibold text-white">
+              DeFi TVL 指数 6 个月区间结构
+            </h3>
+            <p class="mt-2 text-xs text-slate-300">
+              若 TVL 保持在预设区间内，卖方获得额外收益；跌破或突破区间，则向买方支付补偿。
+            </p>
+
+            <dl class="mt-3 grid grid-cols-2 gap-2 text-[11px] text-slate-400">
+              <div>
+                <dt>参考指数</dt>
+                <dd class="text-sm font-semibold text-white">Top DeFi TVL</dd>
+              </div>
+              <div>
+                <dt>期限</dt>
+                <dd class="text-sm font-semibold text-white">6 个月</dd>
+              </div>
+              <div>
+                <dt>年化权利金</dt>
+                <dd class="text-sm font-semibold text-emerald-300">12.5%</dd>
+              </div>
+              <div>
+                <dt>仓位 Delta</dt>
+                <dd class="text-sm font-semibold text-cyan-300">接近中性</dd>
+              </div>
+            </dl>
+
+            <div class="mt-3 flex items-center justify-between text-[11px] text-slate-400">
+              <span>预言机 + 多价格员复核</span>
+              <button class="rounded-full border border-slate-700 px-3 py-1 text-[11px] text-slate-200 hover:border-slate-400 hover:text-white">
+                查看风控细节
+              </button>
+            </div>
+          </article>
+
+          <!-- 案例 4 -->
+          <article class="glass min-w-[260px] max-w-xs flex-1 rounded-2xl border border-slate-800/80 p-4">
+            <div class="flex items-center justify-between text-xs">
+              <div class="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-2 py-1 text-[11px] text-emerald-300">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+                案例 #4 · 收入分成 CFD
+              </div>
+              <span class="text-[11px] text-slate-400">订单号 #NS-2025-004</span>
+            </div>
+
+            <h3 class="mt-3 text-sm font-semibold text-white">
+              线下门店营业额分成（CFD）
+            </h3>
+            <p class="mt-2 text-xs text-slate-300">
+              投资人按营业额浮动收取分成，门店主获得一次性资金，双方通过链上数据对账。
+            </p>
+
+            <dl class="mt-3 grid grid-cols-2 gap-2 text-[11px] text-slate-400">
+              <div>
+                <dt>基础分成比例</dt>
+                <dd class="text-sm font-semibold text-white">5% 营业额</dd>
+              </div>
+              <div>
+                <dt>期限</dt>
+                <dd class="text-sm font-semibold text-white">24 个月</dd>
+              </div>
+              <div>
+                <dt>买方投入</dt>
+                <dd class="text-sm font-semibold text-emerald-300">$150,000</dd>
+              </div>
+              <div>
+                <dt>卖方保证金</dt>
+                <dd class="text-sm font-semibold text-cyan-300">$40,000</dd>
+              </div>
+            </dl>
+
+            <div class="mt-3 flex items-center justify-between text-[11px] text-slate-400">
+              <span>日度数据喂价 · 可追溯</span>
+              <button class="rounded-full border border-slate-700 px-3 py-1 text-[11px] text-slate-200 hover:border-slate-400 hover:text-white">
+                复制为模板
+              </button>
+            </div>
+          </article>
+
+          <!-- 案例 5 -->
+          <article class="glass min-w-[260px] max-w-xs flex-1 rounded-2xl border border-slate-800/80 p-4">
+            <div class="flex items-center justify-between text-xs">
+              <div class="inline-flex items-center gap-2 rounded-full bg-amber-500/10 px-2 py-1 text-[11px] text-amber-300">
+                <span class="h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+                案例 #5 · 创始人对赌条款
+              </div>
+              <span class="text-[11px] text-slate-400">订单号 #NS-2025-005</span>
+            </div>
+
+            <h3 class="mt-3 text-sm font-semibold text-white">
+              业绩对赌 · 达标返还股权
+            </h3>
+            <p class="mt-2 text-xs text-slate-300">
+              创始人与投资人设定三年营收目标，达标则释放回购权；未达标则按约定价格回购部分股份。
+            </p>
+
+            <dl class="mt-3 grid grid-cols-2 gap-2 text-[11px] text-slate-400">
+              <div>
+                <dt>目标营收 CAGR</dt>
+                <dd class="text-sm font-semibold text-white">≥ 35%</dd>
+              </div>
+              <div>
+                <dt>考核期限</dt>
+                <dd class="text-sm font-semibold text-white">36 个月</dd>
+              </div>
+              <div>
+                <dt>对赌规模</dt>
+                <dd class="text-sm font-semibold text-emerald-300">公司股权 8%</dd>
+              </div>
+              <div>
+                <dt>结算方式</dt>
+                <dd class="text-sm font-semibold text-cyan-300">现金 / 股权二选一</dd>
+              </div>
+            </dl>
+
+            <div class="mt-3 flex items-center justify-between text-[11px] text-slate-400">
+              <span>所有条款上链 · 不可篡改</span>
+              <button class="rounded-full border border-slate-700 px-3 py-1 text-[11px] text-slate-200 hover:border-slate-400 hover:text-white">
+                预览合约结构
+              </button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-400">
+        <span>提示：左右滑动 / 鼠标滚轮横向滚动，可浏览更多订单案例。</span>
+        <button class="rounded-full bg-slate-900/80 px-4 py-1.5 text-xs text-slate-200 hover:bg-slate-800">
+          我也要发起一单
+        </button>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how" class="mt-16">
+      <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <h2 class="text-xl font-semibold text-white sm:text-2xl">
+            NST 是如何运作的？
+          </h2>
+          <p class="mt-2 max-w-xl text-sm text-slate-300">
+            一套通用的非标风险基础设施，拆解成三个简单流程：买方定义、卖方竞价、链上结算，中间所有状态都可验证。
+          </p>
+        </div>
+        <div class="text-xs text-slate-400">
+          全程非托管 · 资金始终在链上可视 · 支持机构级风控逻辑
+        </div>
+      </div>
+
+      <div class="mt-6 grid gap-6 md:grid-cols-3">
+        <!-- Step 1 -->
+        <div class="glass rounded-2xl border border-slate-800/80 p-4">
+          <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-cyan-500/10 px-2 py-1 text-[11px] text-cyan-300">
+            <span class="flex h-4 w-4 items-center justify-center rounded-full bg-cyan-500 text-[10px] text-slate-950">1</span>
+            买方流程
+          </div>
+          <h3 class="text-sm font-semibold text-white">用自然语言定义任何「非标」</h3>
+          <p class="mt-2 text-xs text-slate-300">
+            买方只需要写清楚标的、触发条件、期限和赔付逻辑，NST 会把它结构化为链上的条款与参数。
+          </p>
+          <ul class="mt-3 space-y-1.5 text-[11px] text-slate-400">
+            <li>• 支持股权、房地产、收入分成、应收账款等多种资产</li>
+            <li>• 可选择预言机 + 价格员委员会的混合模式</li>
+            <li>• 权利金先锁在合约里，卖方一目了然</li>
+          </ul>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="glass rounded-2xl border border-slate-800/80 p-4">
+          <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-indigo-500/10 px-2 py-1 text-[11px] text-indigo-300">
+            <span class="flex h-4 w-4 items-center justify-center rounded-full bg-indigo-500 text-[10px] text-slate-950">2</span>
+            卖方流程
+          </div>
+          <h3 class="text-sm font-semibold text-white">已质押的卖方进入区间内竞价</h3>
+          <p class="mt-2 text-xs text-slate-300">
+            通过资格筛选的卖方，将保证金注入池子，在买方可接受的区间内报出自己的权利金要求。
+          </p>
+          <ul class="mt-3 space-y-1.5 text-[11px] text-slate-400">
+            <li>• 多个卖方可以拆分同一笔订单，按份额分摊风险</li>
+            <li>• 每个仓位都有实时保证金健康度监控</li>
+            <li>• 未被占用的保证金可以通过策略获得链上收益</li>
+          </ul>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="glass rounded-2xl border border-slate-800/80 p-4">
+          <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-2 py-1 text-[11px] text-emerald-300">
+            <span class="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-slate-950">3</span>
+            结算流程
+          </div>
+          <h3 class="text-sm font-semibold text-white">链上自动结算 · 争议过程透明</h3>
+          <p class="mt-2 text-xs text-slate-300">
+            预言机与价格员在到期时喂价或判定事件是否发生，所有投票与结算结果都记录在链上。
+          </p>
+          <ul class="mt-3 space-y-1.5 text-[11px] text-slate-400">
+            <li>• 争议通过多价格员投票解决，全部可追踪</li>
+            <li>• 赔付从锁定保证金中自动划转，避免赖账风险</li>
+            <li>• NST 质押者按规则分享协议手续费</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products / Cards -->
+    <section id="products" class="mt-16">
+      <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <h2 class="text-xl font-semibold text-white sm:text-2xl">
+            用 NST 可以做什么？
+          </h2>
+          <p class="mt-2 max-w-xl text-sm text-slate-300">
+            一套协议，多条产品线。你可以把它当作自己的场外衍生品桌面、风险对冲工具箱，或白标化给你的客户。
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 grid gap-6 md:grid-cols-3">
+        <!-- Card 1 -->
+        <div class="glass rounded-2xl border border-slate-800/80 p-4">
+          <div class="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-300">
+            OTC OPTIONS
+          </div>
+          <h3 class="mt-2 text-sm font-semibold text-white">
+            针对非上市 / 非流动资产的场外期权
+          </h3>
+          <p class="mt-2 text-xs text-slate-300">
+            看涨、看跌、区间、路径依赖等结构，都可以通过参数组合出来，并配合价格员与预言机完成结算。
+          </p>
+          <div class="mt-4 grid grid-cols-2 gap-3 text-[11px] text-slate-400">
+            <div>
+              <div class="text-slate-300">最长期限</div>
+              <div class="text-sm font-semibold text-white">36 个月</div>
+            </div>
+            <div>
+              <div class="text-slate-300">最低名义本金</div>
+              <div class="text-sm font-semibold text-white">$100,000</div>
+            </div>
+          </div>
+          <button class="mt-4 w-full rounded-full border border-slate-700 py-1.5 text-xs text-slate-200 hover:border-slate-400 hover:text-white">
+            浏览期权模板
+          </button>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="glass rounded-2xl border border-slate-800/80 p-4">
+          <div class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-300">
+            NAV & REVENUE FLOORS
+          </div>
+          <h3 class="mt-2 text-sm font-semibold text-white">
+            私募组合 / 房地产资产净值与收入底线
+          </h3>
+          <p class="mt-2 text-xs text-slate-300">
+            为 PE/VC 组合、房产出租、应收账款包等设计净值或现金流下限，让 LP 与出资人对风险更有信心。
+          </p>
+          <div class="mt-4 grid grid-cols-2 gap-3 text-[11px] text-slate-400">
+            <div>
+              <div class="text-slate-300">已保护资产规模</div>
+              <div class="text-sm font-semibold text-white">$8.3M+</div>
+            </div>
+            <div>
+              <div class="text-slate-300">历史违约率</div>
+              <div class="text-sm font-semibold text-emerald-300">&lt; 0.3%</div>
+            </div>
+          </div>
+          <button class="mt-4 w-full rounded-full border border-slate-700 py-1.5 text-xs text-slate-200 hover:border-slate-400 hover:text-white">
+            查看案例示例
+          </button>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="glass rounded-2xl border border-slate-800/80 p-4">
+          <div class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-300">
+            DAO & TREASURY
+          </div>
+          <h3 class="mt-2 text-sm font-semibold text-white">
+            为协议金库与流动性仓位对冲风险
+          </h3>
+          <p class="mt-2 text-xs text-slate-300">
+            DAO 可以用 NST 为金库、LP 仓位、关键对手方设计自定义风险对冲结构，让社区决策更有底气。
+          </p>
+          <div class="mt-4 grid grid-cols-2 gap-3 text-[11px] text-slate-400">
+            <div>
+              <div class="text-slate-300">服务 DAO 数量</div>
+              <div class="text-sm font-semibold text-white">12+</div>
+            </div>
+            <div>
+              <div class="text-slate-300">可用覆盖容量</div>
+              <div class="text-sm font-semibold text-white">$25M</div>
+            </div>
+          </div>
+          <button class="mt-4 w-full rounded-full border border-slate-700 py-1.5 text-xs text-slate-200 hover:border-slate-400 hover:text-white">
+            与团队预约沟通
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why NST -->
+    <section id="why" class="mt-16">
+      <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <h2 class="text-xl font-semibold text-white sm:text-2xl">
+            为什么选择 NST？
+          </h2>
+          <p class="mt-2 max-w-xl text-sm text-slate-300">
+            不做「黑盒保险」，只做规则写在链上的非标风险基础设施。对买方、卖方、质押者都更公平，对监管与 LP 更透明。
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 grid gap-6 md:grid-cols-3">
+        <div class="glass rounded-2xl border border-slate-800/80 p-4">
+          <h3 class="text-sm font-semibold text-white">激励高度对齐</h3>
+          <p class="mt-2 text-xs text-slate-300">
+            NST 质押者、买方与卖方的收益，都建立在系统长期健康、真实赔付、资金高效使用的前提之上，而不是「多拒赔多赚钱」。
+          </p>
+          <ul class="mt-3 space-y-1.5 text-[11px] text-slate-400">
+            <li>• 手续费分配在链上可查</li>
+            <li>• 没有多层不透明再保险结构</li>
+            <li>• veNST 治理决定参数与风控</li>
+          </ul>
+        </div>
+        <div class="glass rounded-2xl border border-slate-800/80 p-4">
+          <h3 class="text-sm font-semibold text-white">为机构与监管而设计</h3>
+          <p class="mt-2 text-xs text-slate-300">
+            每一笔订单都有清晰的链上记录和结算轨迹，方便对接审计、合规团队以及传统金融合作方。
+          </p>
+          <ul class="mt-3 space-y-1.5 text-[11px] text-slate-400">
+            <li>• 支持导出账本与报表</li>
+            <li>• 对接可选的 KYC / KYB 流程</li>
+            <li>• 线下协议可哈希上链，防篡改</li>
+          </ul>
+        </div>
+        <div class="glass rounded-2xl border border-slate-800/80 p-4">
+          <h3 class="text-sm font-semibold text-white">模块化 · 可白标</h3>
+          <p class="mt-2 text-xs text-slate-300">
+            预言机、价格员、评分逻辑、前端样式都可以替换，你可以把 NST 当成底层引擎，在自己品牌下对外服务。
+          </p>
+          <ul class="mt-3 space-y-1.5 text-[11px] text-slate-400">
+            <li>• 价格员 / 喂价人模块分离</li>
+            <li>• veNST 驱动的治理与参数配置</li>
+            <li>• 支持白标 UI 与 API 集成</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Community / testimonial -->
+    <section id="community" class="mt-16">
+      <div class="glass rounded-3xl border border-slate-800/80 p-6 lg:flex lg:items-center lg:justify-between lg:gap-8">
+        <div class="max-w-md">
+          <h2 class="text-xl font-semibold text-white sm:text-2xl">
+            与真正懂风险的人一起共建 NST
+          </h2>
+          <p class="mt-2 text-sm text-slate-300">
+            NST 社区聚集了场外期权交易员、结构化产品团队、地产投资人以及 Web3 创始人。
+            如果你也在做「非标」，欢迎来一起打磨下一代基础设施。
+          </p>
+          <div class="mt-4 flex flex-wrap gap-2 text-xs text-slate-400">
+            <span class="rounded-full bg-slate-900/80 px-3 py-1">Telegram 社群</span>
+            <span class="rounded-full bg-slate-900/80 px-3 py-1">Discord 社群</span>
+            <span class="rounded-full bg-slate-900/80 px-3 py-1">Twitter / X 官方账号</span>
+          </div>
+          <button class="mt-5 rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 px-5 py-2 text-xs font-semibold text-slate-950">
+            加入 NST 社区
+          </button>
+        </div>
+
+        <div class="mt-6 max-w-sm lg:mt-0">
+          <div class="glass rounded-2xl border border-slate-700/80 p-4">
+            <div class="text-xs text-slate-400">来自一线从业者的反馈</div>
+            <p class="mt-3 text-sm text-slate-100">
+              “传统保险和投行不愿意做的小单非标，NST 帮我们把条款参数化、资金上链化。
+              LP 能看见每一笔风险和赔付逻辑，我们也敢做以前不敢做的结构。”
+            </p>
+            <div class="mt-4 text-xs text-slate-400">
+              <div class="font-semibold text-slate-200">Aria · OTC 结构化负责人</div>
+              <div>Non-Standard Markets Desk</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="mt-16">
+      <h2 class="text-xl font-semibold text-white sm:text-2xl">
+        常见问题（FAQ）
+      </h2>
+      <div class="mt-6 space-y-3">
+        <details class="glass rounded-2xl border border-slate-800/80 px-4 py-3 text-sm">
+          <summary class="cursor-pointer list-none text-slate-100">
+            NST 是一家保险公司吗？
+          </summary>
+          <p class="mt-2 text-xs text-slate-300">
+            不是。NST 是一套用于非标风险分担的智能合约协议，本身不托管客户资金，也不承诺特定收益。
+            买方与卖方在协议之上点对点签署合约，规则写在代码里，任何人都可以审计。
+          </p>
+        </details>
+        <details class="glass rounded-2xl border border-slate-800/80 px-4 py-3 text-sm">
+          <summary class="cursor-pointer list-none text-slate-100">
+            赔付结果由谁来决定？会不会「说了不算」？
+          </summary>
+          <p class="mt-2 text-xs text-slate-300">
+            每一笔订单在创建时就确定好预言机和价格员委员会。
+            当触发条件发生时，这些喂价人会投票或提供价格，智能合约根据事先写死的规则自动结算，
+            没有人可以单方面更改结果。
+          </p>
+        </details>
+        <details class="glass rounded-2xl border border-slate-800/80 px-4 py-3 text-sm">
+          <summary class="cursor-pointer list-none text-slate-100">
+            质押 NST 有什么风险？
+          </summary>
+          <p class="mt-2 text-xs text-slate-300">
+            NST 质押者会与协议绑定，对某些极端风险承担兜底责任，同时获得协议手续费与部分权利金分成。
+            具体参数由 veNST 治理决定，任何质押之前都应该认真阅读风险披露文件。
+          </p>
+        </details>
+        <details class="glass rounded-2xl border border-slate-800/80 px-4 py-3 text-sm">
+          <summary class="cursor-pointer list-none text-slate-100">
+            我可以把 NST 白标给自己的客户用吗？
+          </summary>
+          <p class="mt-2 text-xs text-slate-300">
+            可以。协议本身是模块化的，你可以接自己的前端、风控逻辑和合规流程，
+            在你的品牌之下向客户提供非标风险管理服务，同时共享底层流动性。
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <!-- 底部 CTA -->
+    <section class="mt-16">
+      <div class="glass rounded-3xl border border-slate-800/80 px-6 py-6 text-center">
+        <h2 class="text-xl font-semibold text-white sm:text-2xl">
+          准备好，用一笔真实的非标订单来测试 NST 吗？
+        </h2>
+        <p class="mt-2 text-sm text-slate-300">
+          先在测试网完整跑一遍流程：发起需求、卖方竞价、锁定保证金、喂价结算。再决定是否把真实资产搬上来。
+        </p>
+        <div class="mt-4 flex flex-wrap justify-center gap-3">
+          <button class="rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 px-6 py-2 text-xs font-semibold text-slate-950">
+            连接测试网钱包 · 体验 Demo
+          </button>
+          <button class="rounded-full border border-slate-700 px-6 py-2 text-xs text-slate-200 hover:border-slate-400 hover:text-white">
+            下载白皮书 / 文档
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-slate-950/80">
+    <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between lg:px-0">
+      <div class="flex items-center gap-2">
+        <span class="text-slate-300">© 2025 NST Finance.</span>
+        <span>非标未来 · All rights reserved.</span>
+      </div>
+      <div class="flex flex-wrap gap-4">
+        <a href="#" class="hover:text-slate-300">隐私政策</a>
+        <a href="#" class="hover:text-slate-300">条款与条件</a>
+        <a href="#" class="hover:text-slate-300">文档</a>
+        <a href="#" class="hover:text-slate-300">安全说明</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 简单移动端菜单脚本 -->
+  <script>
+    const btn = document.getElementById('mobileMenuBtn');
+    const menu = document.getElementById('mobileMenu');
+    if (btn && menu) {
+      btn.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
       });
     }
-
-    // ======================================================
-    // 10. 初始化
-    // ======================================================
-
-    function init() {
-      document.getElementById("currentWallet").textContent = demoUser;
-      renderMyTrades();
-      initDetailOrderSelect();
-      if (orders.length > 0) renderOrderDetail(orders[0].id);
-      renderRaterView();
-    }
-
-    init();
   </script>
 </body>
 </html>
