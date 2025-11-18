@@ -1,3 +1,4 @@
+主页
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -198,8 +199,168 @@
 
   <!-- 主体 -->
   <main class="mx-auto max-w-6xl px-4 pb-16 pt-10 lg:px-0 lg:pt-14">
+    
 
-    <!-- 捐赠模块 -->
+    <!-- 捐<!-- HERO 区（保持不变） -->
+    <section class="relative hero-grid mt-16 overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-950/70 px-6 py-10 shadow-2xl shadow-blue-900/60 lg:flex lg:items-center lg:gap-10 lg:px-10 lg:py-14">
+      <!-- 左 -->
+      <div class="relative z-10 max-w-xl space-y-6">
+        <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-2.5 py-1 text-xs text-emerald-200">
+          <span class="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400 badge-dot"></span>
+          已部署于 BNB Chain · 合约审计中 / 可扩展至多链
+        </div>
+
+        <h1 class="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-5xl">
+          非标风险的新一代基础设施
+          <span class="block bg-gradient-to-r from-cyan-300 via-sky-400 to-indigo-400 bg-clip-text text-transparent">
+            买方自定义 · 卖方竞价 · 全链上结算
+          </span>
+        </h1>
+
+        <p class="max-w-lg text-sm leading-relaxed text-slate-300 sm:text-base">
+          NST Finance 让场外期权、私募股权、房地产收益权等「非标资产」可以被自定义、撮合和清算。
+          全流程上链，保证金、订单、结算逻辑全部公开透明，让买卖双方在规则清晰的环境下公平博弈。
+        </p>
+
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <a href="#order-hall" class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-blue-500/40">
+            立即查看订单大厅
+          </a>
+          <a href="#donate" class="inline-flex items-center justify-center rounded-full border border-slate-600/80 px-5 py-2.5 text-sm font-medium text-slate-200 hover:border-slate-400 hover:text-white">
+            支持项目 · Genesis 捐赠
+          </a>
+        </div>
+
+        <div class="flex flex-wrap gap-6 pt-2 text-xs text-slate-400 sm:text-sm">
+          <div>
+            <div class="text-slate-200">100% 链上可验证</div>
+            <div>保证金、订单、结算路径全部可查</div>
+          </div>
+          <div>
+            <div class="text-slate-200">询价零 Gas</div>
+            <div>仅在成交时支付链上费用</div>
+          </div>
+          <div>
+            <div class="text-slate-200">NST 代币深度绑定</div>
+            <div>质押提升收益与排序权</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右：发光卡片/仪表盘示意 -->
+      <div class="relative mt-10 flex-1 lg:mt-0">
+        <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-cyan-400/20 blur-3xl"></div>
+        <div class="absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-indigo-500/30 blur-3xl"></div>
+
+        <div class="relative glass gradient-border mx-auto max-w-md rounded-3xl border border-slate-700/80 p-4">
+          <div class="mb-3 flex items-center justify-between text-xs text-slate-400">
+            <div class="inline-flex items-center gap-1 rounded-full bg-slate-900/80 px-1 py-1">
+              <button class="rounded-full bg-slate-800 px-3 py-1 text-[11px] text-slate-100">
+                覆盖池概览
+              </button>
+              <button class="rounded-full px-3 py-1 text-[11px]">
+                我的仓位
+              </button>
+            </div>
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-1 text-[11px] text-emerald-300">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+              资金健康 · 无穿仓
+            </span>
+          </div>
+
+          <div class="mb-4 grid grid-cols-3 gap-3 text-xs">
+            <div class="rounded-2xl bg-slate-900/80 p-3">
+              <div class="text-slate-400">池子总规模</div>
+              <div class="mt-1 text-sm font-semibold text-white">$42.6M</div>
+              <div class="mt-1 text-[11px] text-emerald-300">本月 +4.3%</div>
+            </div>
+            <div class="rounded-2xl bg-slate-900/80 p-3">
+              <div class="text-slate-400">在险订单数</div>
+              <div class="mt-1 text-sm font-semibold text-white">1,284</div>
+              <div class="mt-1 text-[11px] text-slate-400">平均期限 37 天</div>
+            </div>
+            <div class="rounded-2xl bg-slate-900/80 p-3">
+              <div class="text-slate-400">已质押 NST</div>
+              <div class="mt-1 text-sm font-semibold text-white">18.3M</div>
+              <div class="mt-1 text-[11px] text-cyan-300">当前 APY 23.7%</div>
+            </div>
+          </div>
+
+          <div class="mb-3 flex items-center justify-between text-xs text-slate-400">
+            <span>正在撮合的非标订单示例</span>
+            <span class="rounded-full bg-slate-900/80 px-2 py-0.5 text-[10px] text-slate-300">
+              报价实时刷新 · 3s
+            </span>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div class="flex items-center justify-between rounded-2xl bg-slate-900/80 px-3 py-2.5">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] uppercase tracking-wider text-cyan-300">私募股权</span>
+                  <span class="rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300">
+                    OTC 看跌期权
+                  </span>
+                </div>
+                <div class="mt-0.5 text-[11px] text-slate-400">
+                  B 轮股份 12 个月清算底价保护
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs font-semibold text-slate-50">权利金 7.4%</div>
+                <div class="text-[10px] text-slate-400">LTV 62% · A- 评级</div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between rounded-2xl bg-slate-900/80 px-3 py-2.5">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] uppercase tracking-wider text-indigo-300">房地产</span>
+                  <span class="rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300">
+                    租金保底
+                  </span>
+                </div>
+                <div class="mt-0.5 text-[11px] text-slate-400">
+                  曼谷联排 18 个月租金收入下限
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs font-semibold text-slate-50">权利金 4.1%</div>
+                <div class="text-[10px] text-slate-400">最大赔付 30% · BBB+</div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between rounded-2xl bg-slate-900/80 px-3 py-2.5">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] uppercase tracking-wider text-fuchsia-300">结构性</span>
+                  <span class="rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300">
+                    区间策略
+                  </span>
+                </div>
+                <div class="mt-0.5 text-[11px] text-slate-400">
+                  DeFi TVL 指数 6 个月波动区间
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs font-semibold text-slate-50">权利金 9.8%</div>
+                <div class="text-[10px] text-slate-400">Delta 对冲 · A 级</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 flex items-center justify-between text-[11px] text-slate-300">
+            <span>3 步完成一张非标合约。</span>
+            <a href="#order-hall" class="inline-flex items-center gap-1 rounded-full bg-slate-50/90 px-3 py-1 text-[11px] font-semibold text-slate-900">
+              创建我的第一单
+              <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>赠模块 -->
     <section id="donate" class="mt-10">
       <div class="gradient-border glass relative overflow-hidden rounded-3xl border border-cyan-500/40 px-6 py-6 lg:px-10 lg:py-8">
         <!-- 顶部标题 -->
@@ -371,240 +532,299 @@
         </div>
       </div>
     </section>
+    <!-- ===========================================
+          期权订单大厅（整个页面）
+    ============================================ -->
+    <section id="options-section">
 
-    <!-- 订单大厅模块 -->
-    <section id="order-hall" class="mt-16 glass rounded-3xl border border-slate-800/80 p-6">
-      <div class="mb-4 flex items-center justify-between">
-        <div>
-          <h2 class="text-xl font-semibold text-white">NST 订单大厅</h2>
-          <p class="text-xs text-slate-400">所有真实与模拟订单的展示区</p>
-        </div>
-        <button class="rounded-full border border-slate-700 px-4 py-1.5 text-xs text-slate-200">
-          查看更多（即将开放）
+      <header class="mb-2 flex items-center justify-between">
+        <h1 class="text-lg font-semibold tracking-tight text-slate-50">
+          期权订单大厅
+        </h1>
+      </header>
+
+      <!-- 内部 TAB：全部 / 买单 / 卖单 -->
+      <div class="mb-3 flex gap-2 text-[11px]">
+        <button
+          type="button"
+          class="sub-tab rounded-full bg-slate-800 px-3 py-1 font-medium text-slate-50"
+          data-sub="all">
+          全部订单
+        </button>
+        <button
+          type="button"
+          class="sub-tab rounded-full bg-slate-900 px-3 py-1 font-medium text-slate-400"
+          data-sub="buy">
+          期权买单大厅
+        </button>
+        <button
+          type="button"
+          class="sub-tab rounded-full bg-slate-900 px-3 py-1 font-medium text-slate-400"
+          data-sub="sell">
+          期权卖单大厅
         </button>
       </div>
 
-      <div class="mb-4 flex gap-3">
-        <button class="rounded-full bg-slate-800 px-4 py-1.5 text-xs text-slate-200">全部订单</button>
-        <button class="rounded-full bg-slate-900 px-4 py-1.5 text-xs text-slate-400">期权订单</button>
-        <button class="rounded-full bg-slate-900 px-4 py-1.5 text-xs text-slate-400">CFD订单</button>
-      </div>
 
-      <div class="glass mb-4 grid gap-3 rounded-2xl border border-slate-700/80 p-4 lg:grid-cols-4">
-        <select class="rounded-xl bg-slate-900 px-3 py-2 text-sm text-slate-200">
-          <option>市场（Market）</option>
-          <option>中国 A 股</option>
-          <option>美国 NASDAQ</option>
-        </select>
-        <select class="rounded-xl bg-slate-900 px-3 py-2 text-sm text-slate-200">
-          <option>角色</option>
-          <option>买方</option>
-          <option>卖方</option>
-        </select>
-        <select class="rounded-xl bg-slate-900 px-3 py-2 text-sm text-slate-200">
-          <option>结构/方向</option>
-          <option>看涨</option>
-          <option>看跌</option>
-        </select>
-        <select class="rounded-xl bg-slate-900 px-3 py-2 text-sm text-slate-200">
-          <option>标的</option>
-          <option>TSLA / 特斯拉</option>
-        </select>
-      </div>
+      <!-- ==============================
+           外框：订单列表 + 分页
+      =============================== -->
+      <div class="rounded-2xl border border-slate-700/80 bg-slate-900/60 p-2">
 
-      <div class="glass rounded-2xl border border-slate-800/80 p-4 text-xs">
-        <div class="mb-2 grid grid-cols-5 text-slate-400">
-          <span>结构</span>
-          <span>标的 / 市场</span>
-          <span>期限</span>
-          <span>当前报价</span>
-          <span>操作</span>
+        <!-- 列表区（滚动条 + 多个卡片） -->
+       <div id="order-list" class="space-y-3 max-h-[520px] overflow-y-auto pr-1">
+
+
+          <!-- ===========================
+               卡片模板（你原来的样式）
+               我保留 3 张作为示例
+               实际你可复制到 10 张
+          ============================ -->
+
+          <!-- ⭐ 卡片 1 ⭐ -->
+          <article class="relative rounded-2xl border border-slate-700/80 bg-slate-900/90 p-3 text-[11px] leading-relaxed">
+            
+            <!-- 右上角：自由 / 平台 -->
+            <div class="absolute right-3 top-3 inline-flex items-center rounded-full bg-slate-800 px-1.5 py-0.5">
+              <span class="mr-1 rounded-full bg-emerald-500 px-1.5 py-0.5 text-[10px] text-slate-900 font-medium">
+                自由
+              </span>
+              <span class="rounded-full bg-purple-500 px-1.5 py-0.5 text-[10px] text-white font-medium">
+                平台
+              </span>
+            </div>
+
+            <!-- 左侧内容 -->
+            <div class="space-y-2 pr-[110px]">
+              <div>
+                <span class="inline-flex items-center rounded-full bg-slate-800 px-2.5 py-0.5 font-mono text-slate-100">
+                  B000555
+                </span>
+                <span class="ml-2 text-slate-400">2025-11-18 13:20</span>
+              </div>
+
+              <div class="text-slate-400">
+                买方钱包：<span class="font-mono text-slate-300">0xA3c4...92f1</span>
+              </div>
+
+              <div class="flex flex-wrap gap-x-2 gap-y-1">
+                <span class="text-[13px] font-semibold text-slate-50">中国平安</span>
+                <span class="text-slate-400">代码：380582</span>
+                <span class="rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] text-red-400">中国 / A股</span>
+                <span class="text-slate-300">方向：<span class="text-emerald-400">看涨 Call</span></span>
+                <span class="text-slate-300">行权价：<span class="font-medium text-slate-50">23.80</span></span>
+              </div>
+
+              <div class="flex flex-wrap gap-x-2 gap-y-0.5 text-slate-300">
+                <span>名义本金：<span class="font-medium">300 万</span></span>
+                <span>币种：人民币(CNY)</span>
+                <span>接受费率：<span class="font-medium">2.5%–4%</span></span>
+
+                <span class="w-full text-slate-400">
+                  汇率计算：7.5–12 万 CNY ≈ 10,700–17,100
+                  <span class="font-semibold text-emerald-400">USDT</span>
+                </span>
+
+                <span class="w-full">期限：1 个月 · 2025-11-22 → 2025-12-22</span>
+              </div>
+            </div>
+
+            <!-- 右下角：倒计时 + 点点 + 已接 + 接单按钮 -->
+            <div class="absolute bottom-3 right-3 flex w-[100px] flex-col items-end gap-1.5">
+              <div class="text-[13px] font-semibold text-amber-400">倒计时 26:01</div>
+              <div class="flex gap-1">
+                <span class="h-1.5 w-1.5 bg-emerald-400 rounded-full"></span>
+                <span class="h-1.5 w-1.5 bg-slate-600 rounded-full"></span>
+                <span class="h-1.5 w-1.5 bg-slate-600 rounded-full"></span>
+                <span class="h-1.5 w-1.5 bg-slate-600 rounded-full"></span>
+                <span class="h-1.5 w-1.5 bg-slate-600 rounded-full"></span>
+              </div>
+              <div class="text-[10px] text-slate-300">已接 1 / 5</div>
+
+              <button
+                type="button"
+                class="mt-1 w-full rounded-full bg-primary-500 px-3 py-2 text-[12px] text-white font-semibold hover:bg-primary-600">
+                接单
+              </button>
+            </div>
+
+          </article>
+
+          <!-- ⭐ 卡片 2 ⭐ -->
+          <article class="relative rounded-2xl border border-slate-700/80 bg-slate-900/90 p-3 text-[11px] leading-relaxed">
+            <div class="absolute right-3 top-3 inline-flex items-center rounded-full bg-slate-800 px-1.5 py-0.5">
+              <span class="mr-1 rounded-full bg-emerald-500 px-1.5 py-0.5 text-[10px] text-slate-900 font-medium">
+                自由
+              </span>
+              <span class="rounded-full bg-purple-500 px-1.5 py-0.5 text-[10px] text-white font-medium">
+                平台
+              </span>
+            </div>
+
+            <div class="space-y-2 pr-[110px]">
+              <div>
+                <span class="inline-flex items-center rounded-full bg-slate-800 px-2.5 py-0.5 font-mono text-slate-100">
+                  B000103
+                </span>
+                <span class="ml-2 text-slate-400">2025-11-18 14:30</span>
+              </div>
+
+              <div class="text-slate-400">
+                买方钱包：<span class="font-mono text-slate-300">0x91b2...7cde</span>
+              </div>
+
+              <div class="flex flex-wrap gap-x-2 gap-y-1">
+                <span class="text-[13px] font-semibold text-slate-50">中国平安</span>
+                <span class="text-slate-400">代码：380582</span>
+                <span class="rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] text-red-400">中国 / A股</span>
+                <span class="text-slate-300">方向：<span class="text-emerald-400">看涨 Call</span></span>
+                <span class="text-slate-300">行权价：<span class="font-medium text-slate-50">21.50</span></span>
+              </div>
+
+              <div class="flex flex-wrap gap-x-2 gap-y-0.5 text-slate-300">
+                <span>名义本金：<span class="font-medium">100 万</span></span>
+                <span>币种：人民币(CNY)</span>
+                <span>接受费率：<span class="font-medium">5%–8%</span></span>
+
+                <span class="w-full text-slate-400">
+                  汇率计算：5–8 万 CNY ≈ 7,000–11,200
+                  <span class="font-semibold text-emerald-400">USDT</span>
+                </span>
+
+                <span class="w-full">期限：1 个月 · 2025-12-01 → 2025-12-31</span>
+              </div>
+            </div>
+
+            <div class="absolute bottom-3 right-3 flex w-[100px] flex-col items-end gap-1.5">
+              <div class="text-[13px] font-semibold text-amber-400">倒计时 29:32</div>
+              <div class="flex gap-1">
+                <span class="h-1.5 w-1.5 bg-emerald-400 rounded-full"></span>
+                <span class="h-1.5 w-1.5 bg-emerald-400 rounded-full"></span>
+                <span class="h-1.5 w-1.5 bg-slate-600 rounded-full"></span>
+                <span class="h-1.5 w-1.5 bg-slate-600 rounded-full"></span>
+                <span class="h-1.5 w-1.5 bg-slate-600 rounded-full"></span>
+              </div>
+              <div class="text-[10px] text-slate-300">已接 3 / 5</div>
+
+              <button
+                type="button"
+                class="mt-1 w-full rounded-full bg-primary-500 px-3 py-2 text-[12px] text-white font-semibold hover:bg-primary-600">
+                接单
+              </button>
+            </div>
+          </article>
+
+          <!-- ⭐ 卡片 3（看跌） ⭐ -->
+          <article class="relative rounded-2xl border border-slate-700/80 bg-slate-900/90 p-3 text-[11px] leading-relaxed">
+
+            <div class="absolute right-3 top-3 inline-flex items-center rounded-full bg-slate-800 px-1.5 py-0.5">
+              <span class="mr-1 rounded-full bg-emerald-500 px-1.5 py-0.5 text-[10px] text-slate-900 font-medium">
+                自由
+              </span>
+              <span class="rounded-full bg-purple-500 px-1.5 py-0.5 text-[10px] text-white font-medium">
+                平台
+              </span>
+            </div>
+
+            <div class="space-y-2 pr-[110px]">
+              <div>
+                <span class="inline-flex items-center rounded-full bg-slate-800 px-2.5 py-0.5 font-mono text-slate-100">
+                  B000211
+                </span>
+                <span class="ml-2 text-slate-400">2025-11-18 13:55</span>
+              </div>
+
+              <div class="text-slate-400">
+                买方钱包：<span class="font-mono text-slate-300">0x5f7a...ab33</span>
+              </div>
+
+              <div class="flex flex-wrap gap-x-2 gap-y-1">
+                <span class="text-[13px] font-semibold text-slate-50">中国平安</span>
+                <span class="text-slate-400">代码：380582</span>
+                <span class="rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] text-red-400">中国 / A股</span>
+                <span class="text-slate-300">方向：<span class="text-sky-400">看跌 Put</span></span>
+                <span class="text-slate-300">行权价：<span class="font-medium text-slate-50">18.80</span></span>
+              </div>
+
+              <div class="flex flex-wrap gap-x-2 gap-y-0.5 text-slate-300">
+                <span>名义本金：<span class="font-medium">80 万</span></span>
+                <span>币种：人民币(CNY)</span>
+                <span>接受费率：<span class="font-medium">4%–7%</span></span>
+
+                <span class="w-full text-slate-400">
+                  汇率计算：3.2–5.6 万 CNY ≈ 4,600–8,000
+                  <span class="font-semibold text-emerald-400">USDT</span>
+                </span>
+
+                <span class="w-full">期限：1 个月 · 2025-11-20 → 2025-12-20</span>
+              </div>
+            </div>
+
+            <div class="absolute bottom-3 right-3 flex w-[100px] flex-col items-end gap-1.5">
+              <div class="text-[13px] font-semibold text-amber-400">倒计时 08:12</div>
+              <div class="flex gap-1">
+                <span class="h-1.5 w-1.5 bg-emerald-400 rounded-full"></span>
+                <span class="h-1.5 w-1.5 bg-emerald-400 rounded-full"></span>
+                <span class="h-1.5 w-1.5 bg-emerald-400 rounded-full"></span>
+                <span class="h-1.5 w-1.5 bg-emerald-400 rounded-full"></span>
+                <span class="h-1.5 w-1.5 bg-slate-600 rounded-full"></span>
+              </div>
+              <div class="text-[10px] text-slate-300">已接 4 / 5</div>
+
+              <button
+                type="button"
+                class="mt-1 w-full rounded-full bg-primary-500 px-3 py-2 text-[12px] text-white font-semibold hover:bg-primary-600">
+                接单
+              </button>
+            </div>
+          </article>
+
+
+          <!-- ⭐ 后面你可复制到 10 条 ⭐ -->
+
         </div>
 
-        <div class="mb-2 grid grid-cols-5 items-center rounded-xl bg-slate-900/80 p-3 text-slate-200">
-          <span>欧式看涨</span>
-          <span>TSLA / NASDAQ</span>
-          <span>30 天</span>
-          <span>7.5%</span>
-          <button class="rounded-full bg-cyan-500 px-3 py-1 text-[10px] text-slate-900">
-            查看详情
+
+        <!-- ========================
+             底部分页
+        ========================= -->
+        <div class="mt-2 flex justify-end gap-2 text-[11px]">
+          <button
+            type="button"
+            class="page-btn rounded-full bg-slate-800 px-3 py-1 text-slate-100">
+            全部
+          </button>
+          <button
+            type="button"
+            class="page-btn rounded-full bg-slate-900 px-3 py-1 text-slate-400">
+            上一页
+          </button>
+          <button
+            type="button"
+            class="page-btn rounded-full bg-slate-900 px-3 py-1 text-slate-400">
+            下一页
           </button>
         </div>
 
-        <div class="grid grid-cols-5 items-center rounded-xl bg-slate-900/80 p-3 text-slate-200">
-          <span>区间策略</span>
-          <span>BTC / Binance</span>
-          <span>7 天</span>
-          <span>15.2%</span>
-          <button class="rounded-full bg-cyan-500 px-3 py-1 text-[10px] text-slate-900">
-            查看详情
-          </button>
-        </div>
       </div>
+
+
+      <!-- ⭐ 底部两个大发光按钮：同一行，放大，发光 ⭐ -->
+      <div class="mt-4 flex gap-3 text-[12px]">
+        <button
+          type="button"
+          class="flex-1 rounded-2xl bg-gradient-to-r from-emerald-400 via-cyan-400 to-sky-500 px-4 py-2.5 font-semibold text-slate-900 shadow-xl shadow-emerald-500/40 hover:opacity-90 active:scale-[0.97]">
+          买方建仓
+        </button>
+        <button
+          type="button"
+          class="flex-1 rounded-2xl bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 px-4 py-2.5 font-semibold text-white shadow-xl shadow-pink-500/40 hover:opacity-90 active:scale-[0.97]">
+          卖方建仓
+        </button>
+      </div>
+
     </section>
-
-    <!-- HERO 区（保持不变） -->
-    <section class="relative hero-grid mt-16 overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-950/70 px-6 py-10 shadow-2xl shadow-blue-900/60 lg:flex lg:items-center lg:gap-10 lg:px-10 lg:py-14">
-      <!-- 左 -->
-      <div class="relative z-10 max-w-xl space-y-6">
-        <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-2.5 py-1 text-xs text-emerald-200">
-          <span class="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400 badge-dot"></span>
-          已部署于 BNB Chain · 合约审计中 / 可扩展至多链
-        </div>
-
-        <h1 class="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-5xl">
-          非标风险的新一代基础设施
-          <span class="block bg-gradient-to-r from-cyan-300 via-sky-400 to-indigo-400 bg-clip-text text-transparent">
-            买方自定义 · 卖方竞价 · 全链上结算
-          </span>
-        </h1>
-
-        <p class="max-w-lg text-sm leading-relaxed text-slate-300 sm:text-base">
-          NST Finance 让场外期权、私募股权、房地产收益权等「非标资产」可以被自定义、撮合和清算。
-          全流程上链，保证金、订单、结算逻辑全部公开透明，让买卖双方在规则清晰的环境下公平博弈。
-        </p>
-
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <a href="#order-hall" class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-blue-500/40">
-            立即查看订单大厅
-          </a>
-          <a href="#donate" class="inline-flex items-center justify-center rounded-full border border-slate-600/80 px-5 py-2.5 text-sm font-medium text-slate-200 hover:border-slate-400 hover:text-white">
-            支持项目 · Genesis 捐赠
-          </a>
-        </div>
-
-        <div class="flex flex-wrap gap-6 pt-2 text-xs text-slate-400 sm:text-sm">
-          <div>
-            <div class="text-slate-200">100% 链上可验证</div>
-            <div>保证金、订单、结算路径全部可查</div>
-          </div>
-          <div>
-            <div class="text-slate-200">询价零 Gas</div>
-            <div>仅在成交时支付链上费用</div>
-          </div>
-          <div>
-            <div class="text-slate-200">NST 代币深度绑定</div>
-            <div>质押提升收益与排序权</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 右：发光卡片/仪表盘示意 -->
-      <div class="relative mt-10 flex-1 lg:mt-0">
-        <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-cyan-400/20 blur-3xl"></div>
-        <div class="absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-indigo-500/30 blur-3xl"></div>
-
-        <div class="relative glass gradient-border mx-auto max-w-md rounded-3xl border border-slate-700/80 p-4">
-          <div class="mb-3 flex items-center justify-between text-xs text-slate-400">
-            <div class="inline-flex items-center gap-1 rounded-full bg-slate-900/80 px-1 py-1">
-              <button class="rounded-full bg-slate-800 px-3 py-1 text-[11px] text-slate-100">
-                覆盖池概览
-              </button>
-              <button class="rounded-full px-3 py-1 text-[11px]">
-                我的仓位
-              </button>
-            </div>
-            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-1 text-[11px] text-emerald-300">
-              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-              资金健康 · 无穿仓
-            </span>
-          </div>
-
-          <div class="mb-4 grid grid-cols-3 gap-3 text-xs">
-            <div class="rounded-2xl bg-slate-900/80 p-3">
-              <div class="text-slate-400">池子总规模</div>
-              <div class="mt-1 text-sm font-semibold text-white">$42.6M</div>
-              <div class="mt-1 text-[11px] text-emerald-300">本月 +4.3%</div>
-            </div>
-            <div class="rounded-2xl bg-slate-900/80 p-3">
-              <div class="text-slate-400">在险订单数</div>
-              <div class="mt-1 text-sm font-semibold text-white">1,284</div>
-              <div class="mt-1 text-[11px] text-slate-400">平均期限 37 天</div>
-            </div>
-            <div class="rounded-2xl bg-slate-900/80 p-3">
-              <div class="text-slate-400">已质押 NST</div>
-              <div class="mt-1 text-sm font-semibold text-white">18.3M</div>
-              <div class="mt-1 text-[11px] text-cyan-300">当前 APY 23.7%</div>
-            </div>
-          </div>
-
-          <div class="mb-3 flex items-center justify-between text-xs text-slate-400">
-            <span>正在撮合的非标订单示例</span>
-            <span class="rounded-full bg-slate-900/80 px-2 py-0.5 text-[10px] text-slate-300">
-              报价实时刷新 · 3s
-            </span>
-          </div>
-
-          <div class="space-y-2 text-xs">
-            <div class="flex items-center justify-between rounded-2xl bg-slate-900/80 px-3 py-2.5">
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="text-[11px] uppercase tracking-wider text-cyan-300">私募股权</span>
-                  <span class="rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300">
-                    OTC 看跌期权
-                  </span>
-                </div>
-                <div class="mt-0.5 text-[11px] text-slate-400">
-                  B 轮股份 12 个月清算底价保护
-                </div>
-              </div>
-              <div class="text-right">
-                <div class="text-xs font-semibold text-slate-50">权利金 7.4%</div>
-                <div class="text-[10px] text-slate-400">LTV 62% · A- 评级</div>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between rounded-2xl bg-slate-900/80 px-3 py-2.5">
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="text-[11px] uppercase tracking-wider text-indigo-300">房地产</span>
-                  <span class="rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300">
-                    租金保底
-                  </span>
-                </div>
-                <div class="mt-0.5 text-[11px] text-slate-400">
-                  曼谷联排 18 个月租金收入下限
-                </div>
-              </div>
-              <div class="text-right">
-                <div class="text-xs font-semibold text-slate-50">权利金 4.1%</div>
-                <div class="text-[10px] text-slate-400">最大赔付 30% · BBB+</div>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between rounded-2xl bg-slate-900/80 px-3 py-2.5">
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="text-[11px] uppercase tracking-wider text-fuchsia-300">结构性</span>
-                  <span class="rounded-full bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300">
-                    区间策略
-                  </span>
-                </div>
-                <div class="mt-0.5 text-[11px] text-slate-400">
-                  DeFi TVL 指数 6 个月波动区间
-                </div>
-              </div>
-              <div class="text-right">
-                <div class="text-xs font-semibold text-slate-50">权利金 9.8%</div>
-                <div class="text-[10px] text-slate-400">Delta 对冲 · A 级</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-4 flex items-center justify-between text-[11px] text-slate-300">
-            <span>3 步完成一张非标合约。</span>
-            <a href="#order-hall" class="inline-flex items-center gap-1 rounded-full bg-slate-50/90 px-3 py-1 text-[11px] font-semibold text-slate-900">
-              创建我的第一单
-              <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 下面的 How / Products / Rewards / Why / Community / FAQ / 底部 CTA 同你原来一致，我就不注释了 -->
+  <!-- 下面的 How / Products / Rewards / Why / Community / FAQ / 底部 CTA 同你原来一致，我就不注释了 -->
     <!-- 为了完整复制，我保留原结构不改动 -->
 
     <!-- 合作/背书 -->
@@ -1126,3 +1346,4 @@
   </script>
 </body>
 </html>
+
