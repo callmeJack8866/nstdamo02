@@ -400,9 +400,10 @@
             <div class="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-300">
               DONATE
             </div>
-            <h3 class="mt-2 text-sm font-semibold text-white">
-              输入你想捐赠的金额（当前 Demo 支持使用当前网络主币捐赠，如 BNB）
-            </h3>
+<h3 class="mt-2 text-sm font-semibold text-white">
+  输入你想捐赠的金额（当前 Demo 支持使用 BSC 链上的 USDT 捐赠）
+</h3>
+
 
             <!-- 金额输入 -->
             <div class="mt-4 space-y-2 text-sm">
@@ -419,29 +420,30 @@
                   placeholder="例如：0.1"
                   class="w-full rounded-2xl border border-slate-700/80 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
                 />
-                <select
-                  id="donateToken"
-                  class="rounded-2xl border border-slate-700/80 bg-slate-900/80 px-3 py-2 text-xs text-slate-100 focus:border-cyan-400 focus:outline-none"
-                >
-                  <option value="NATIVE">当前网络主币</option>
-                  <option value="USDT">USDT（稍后接入）</option>
-                  <option value="NST">NST（预留）</option>
-                </select>
+<select
+  id="donateToken"
+  class="rounded-2xl border border-slate-700/80 bg-slate-900/80 px-3 py-2 text-xs text-slate-100 focus:border-cyan-400 focus:outline-none"
+>
+  <option value="USDT">USDT（BSC）</option>
+  <option value="NATIVE" disabled>当前网络主币（预留）</option>
+  <option value="NST" disabled>NST（预留）</option>
+</select>
+
               </div>
 
               <!-- 快捷档位 -->
               <div class="mt-3 flex flex-wrap gap-2 text-xs">
-                <button type="button" data-amount="0.05" class="quick-amount rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
-                  0.05
+                <button type="button" data-amount="50" class="quick-amount rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
+                  50
                 </button>
-                <button type="button" data-amount="0.1" class="quick-amount rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
-                  0.1
+                <button type="button" data-amount="500" class="quick-amount rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
+                  500
                 </button>
-                <button type="button" data-amount="0.5" class="quick-amount rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
-                  0.5
+                <button type="button" data-amount="1000" class="quick-amount rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
+                  1000
                 </button>
-                <button type="button" data-amount="1" class="quick-amount rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
-                  1
+                <button type="button" data-amount="2000" class="quick-amount rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
+                  2000
                 </button>
               </div>
             </div>
@@ -462,10 +464,11 @@
               >
                 确认捐赠（真实发起链上交易）
               </button>
-              <p class="text-[11px] text-slate-500">
-                当前版本已支持使用当前网络主币（如 BNB）向指定地址发起捐赠交易。
-                USDT / NST 捐赠将在后续版本接入合约后开放。
-              </p>
+<p class="text-[11px] text-slate-500">
+  当前版本已支持使用 BSC 上的 USDT（BEP20）向指定地址发起捐赠交易，
+  钱包中需保留少量 BNB 作为 Gas 费用。
+</p>
+
             </div>
           </div>
 
@@ -525,10 +528,11 @@
 
         <!-- 底部说明 -->
         <div class="mt-5 border-t border-slate-800/80 pt-3 text-[11px] text-slate-500">
-          <p>
-            风险提示：捐赠是一种对 NST 叙事与协议构建的自愿支持行为，不构成任何形式的收益承诺。
-            未来的空投、veNST、节点资格分配方案，将在社区公开讨论与确认后执行。
-          </p>
+<p>
+  说明：捐赠是一种对 NST 叙事与协议构建的自愿支持行为，不构成任何形式的收益承诺。
+  未来的空投、veNST、节点资格分配方案，将在社区公开讨论与确认后执行。
+</p>
+
         </div>
       </div>
     </section>
@@ -612,7 +616,7 @@
                 <span class="text-slate-400">代码：380582</span>
                 <span class="rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] text-red-400">中国 / A股</span>
                 <span class="text-slate-300">方向：<span class="text-emerald-400">看涨 Call</span></span>
-                <span class="text-slate-300">较验价格：<span class="font-medium text-slate-50">23.80</span></span>
+                <span class="text-slate-300">校验价格：<span class="font-medium text-slate-50">23.80</span></span>
               </div>
 
               <div class="flex flex-wrap gap-x-2 gap-y-0.5 text-slate-300">
@@ -678,7 +682,7 @@
                 <span class="text-slate-400">代码：380582</span>
                 <span class="rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] text-red-400">中国 / A股</span>
                 <span class="text-slate-300">方向：<span class="text-emerald-400">看涨 Call</span></span>
-                <span class="text-slate-300">较验价格：<span class="font-medium text-slate-50">21.50</span></span>
+                <span class="text-slate-300">校验价格：<span class="font-medium text-slate-50">21.50</span></span>
               </div>
 
               <div class="flex flex-wrap gap-x-2 gap-y-0.5 text-slate-300">
@@ -743,7 +747,7 @@
                 <span class="text-slate-400">代码：380582</span>
                 <span class="rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] text-red-400">中国 / A股</span>
                 <span class="text-slate-300">方向：<span class="text-sky-400">看跌 Put</span></span>
-                <span class="text-slate-300">较验价格：<span class="font-medium text-slate-50">18.80</span></span>
+                <span class="text-slate-300">校验价格：<span class="font-medium text-slate-50">18.80</span></span>
               </div>
 
               <div class="flex flex-wrap gap-x-2 gap-y-0.5 text-slate-300">
@@ -1279,53 +1283,69 @@
       });
     }
 
+    // BSC 上的 USDT（Binance-Peg USDT）
+const USDT_BSC_ADDRESS = '0x55d398326f99059ff775485246999027b3197955';
+// 精简版 ERC20 ABI，只保留 transfer
+const ERC20_ABI = [
+  "function transfer(address to, uint256 amount) public returns (bool)"
+];
+
     // ====== 捐赠逻辑（使用当前网络主币，如 BNB） ======
     const DONATION_ADDRESS = '0xd140287e013df5c1eb2996661a86d2e6169b9467'; // TODO: 在这里填你的收款地址
 
-    async function donate() {
-      const amountInput = document.getElementById('donateAmount');
-      const tokenSelect = document.getElementById('donateToken');
+async function donate() {
+  const amountInput = document.getElementById('donateAmount');
+  const tokenSelect = document.getElementById('donateToken');
 
-      if (!amountInput || !tokenSelect) return;
+  if (!amountInput || !tokenSelect) return;
 
-      const raw = (amountInput.value || '').trim();
-      const token = tokenSelect.value;
+  const raw = (amountInput.value || '').trim();
+  const token = tokenSelect.value;
 
-      if (!raw || Number(raw) <= 0) {
-        alert('请输入正确的捐赠金额');
-        return;
-      }
+  if (!raw || Number(raw) <= 0) {
+    alert('请输入正确的捐赠金额');
+    return;
+  }
 
-      if (!window.ethereum) {
-        alert('请先安装钱包（MetaMask / TP 等），再进行捐赠。');
-        return;
-      }
-      if (!currentAccount) {
-        alert('请先连接钱包，再进行捐赠。');
-        return;
-      }
+  if (!window.ethereum) {
+    alert('请先安装钱包（MetaMask / TP / OKX 等），再进行捐赠。');
+    return;
+  }
+  if (!currentAccount) {
+    alert('请先连接钱包，再进行捐赠。');
+    return;
+  }
 
-      if (token !== 'NATIVE') {
-        alert('当前 Demo 版本仅支持使用当前网络主币（如 BNB）捐赠，USDT / NST 将在后续版本接入。');
-        return;
-      }
+  try {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
 
-      try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
+    if (token === 'USDT') {
+      // 使用 USDT（BEP20）捐赠
+      const usdt = new ethers.Contract(USDT_BSC_ADDRESS, ERC20_ABI, signer);
+      // USDT 在 BSC 上是 18 位小数
+      const amount = ethers.utils.parseUnits(raw, 18);
 
-        const tx = await signer.sendTransaction({
-          to: DONATION_ADDRESS,
-          value: ethers.utils.parseEther(raw)
-        });
-
-        alert('捐赠交易已发送，Tx Hash：\n' + tx.hash);
-      } catch (err) {
-        console.error(err);
-        const msg = err && (err.data && err.data.message ? err.data.message : err.message || String(err));
-        alert('捐赠失败：' + msg);
-      }
+      const tx = await usdt.transfer(DONATION_ADDRESS, amount);
+      alert('USDT 捐赠交易已发送，Tx Hash：\n' + tx.hash);
+    } else if (token === 'NATIVE') {
+      // 预留逻辑：如果以后想开放 BNB 捐赠，可以用这个分支
+      const tx = await signer.sendTransaction({
+        to: DONATION_ADDRESS,
+        value: ethers.utils.parseEther(raw)
+      });
+      alert('主币捐赠交易已发送，Tx Hash：\n' + tx.hash);
+    } else {
+      alert('当前仅开放 USDT（BSC）捐赠，其他资产类型为预留选项。');
     }
+
+  } catch (err) {
+    console.error(err);
+    const msg = err && (err.data && err.data.message ? err.data.message : err.message || String(err));
+    alert('捐赠失败：' + msg);
+  }
+}
+
 
     const donateBtn = document.getElementById('donateSubmitBtn');
     if (donateBtn) {
