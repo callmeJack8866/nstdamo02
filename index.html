@@ -29,6 +29,9 @@
     }
   </script>
 
+  <!-- ethers.js 用于连接钱包和发交易 -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
   <style>
     /*背景渐变+发光效果*/
     body {
@@ -73,7 +76,7 @@
       height: 8px;
     }
     .scrollbar-thin::-webkit-scrollbar-track {
-      background: rgba(15,23,42，0.8);
+      background: rgba(15,23,42,0.8);
     }
     .scrollbar-thin::-webkit-scrollbar-thumb {
       background: rgba(51,65,85,0.9);
@@ -104,6 +107,7 @@
 
       <!-- nav links (desktop) -->
       <nav class="hidden items-center gap-8 text-sm text-slate-300 md:flex">
+        <a href="#donate" class="text-cyan-300 font-semibold hover:text-white">捐赠 Genesis</a>
         <a href="#how" class="hover:text-white">如何运作</a>
         <a href="#order-hall" class="hover:text-white">订单大厅</a>
         <a href="#rewards" class="hover:text-white">代币奖励</a>
@@ -113,9 +117,9 @@
         <a href="#faq" class="hover:text-white">常见问题</a>
       </nav>
 
-      <!-- 右侧：多国语言 + 文档 + 钱包选择（3 个小容器） -->
+      <!-- 右侧：多国语言 + 文档 + 连接钱包 -->
       <div class="hidden items-center gap-3 md:flex">
-        <!-- 容器1：多国语言 -->
+        <!-- 多国语言 -->
         <div class="relative rounded-full border border-slate-700/80 bg-slate-900/80 px-2 py-1">
           <select
             class="appearance-none bg-transparent px-2 pr-6 py-0.5 text-xs text-slate-200 focus:outline-none"
@@ -131,59 +135,20 @@
           </div>
         </div>
 
-        <!-- 容器2：文档 -->
+        <!-- 文档 -->
         <div class="rounded-full border border-slate-700/80 bg-slate-900/80 px-1.5 py-1">
           <a href="#faq" class="block px-2 text-xs font-medium text-slate-300 hover:text-white">
             文档
           </a>
         </div>
 
-        <!-- 容器3：钱包 / 资产选择（Demo） -->
-        <div class="relative rounded-full border border-slate-700/80 bg-slate-900/80 px-1.5 py-1">
-          <button
-            id="walletTrigger"
-            class="flex items-center gap-1 px-2 text-xs font-semibold text-slate-100"
-          >
-            资产 / 网络（Demo）
-            <svg class="h-3 w-3 text-slate-400" viewBox="0 0 20 20" fill="none">
-              <path d="M6 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-          </button>
-
-          <!-- 弹出的选择面板（仅 UI，占位） -->
-          <div
-            id="walletPanel"
-            class="absolute right-0 z-30 mt-2 w-52 rounded-2xl border border-slate-800/90 bg-slate-950/95 p-3 text-xs text-slate-200 shadow-xl hidden"
-          >
-            <div class="mb-2 text-[11px] text-slate-400">选择资产（占位，未真正连接钱包）</div>
-            <div class="space-y-1">
-              <label class="flex items-center gap-2">
-                <input type="radio" name="asset" class="h-3 w-3" checked />
-                <span>USDT</span>
-              </label>
-              <label class="flex items-center gap-2">
-                <input type="radio" name="asset" class="h-3 w-3" />
-                <span>BNB</span>
-              </label>
-              <label class="flex items-center gap-2">
-                <input type="radio" name="asset" class="h-3 w-3" />
-                <span>NST（预留）</span>
-              </label>
-            </div>
-
-            <div class="mt-3 border-t border-slate-800/80 pt-2 text-[11px] text-slate-400">
-              <div class="mb-1">网络（示例）：</div>
-              <div class="flex flex-wrap gap-1.5">
-                <span class="rounded-full bg-slate-900/90 px-2 py-0.5">BNB Chain</span>
-                <span class="rounded-full bg-slate-900/90 px-2 py-0.5">多链（预留）</span>
-              </div>
-            </div>
-
-            <div class="mt-3 text-[11px] text-slate-500">
-              说明：当前仅为界面 Demo，不会发起真实链上交易。
-            </div>
-          </div>
-        </div>
+        <!-- 连接钱包按钮（全局） -->
+        <button
+          id="connectWalletBtn"
+          class="rounded-full border border-emerald-400/60 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-200 hover:bg-emerald-500/20"
+        >
+          连接钱包
+        </button>
       </div>
 
       <!-- mobile menu button -->
@@ -198,6 +163,7 @@
     <!-- mobile menu -->
     <div id="mobileMenu" class="glass mx-4 mt-2 hidden rounded-2xl border border-slate-800/80 px-4 py-3 text-sm md:hidden">
       <nav class="flex flex-col gap-3 text-slate-200">
+        <a href="#donate">捐赠 Genesis</a>
         <a href="#how">如何运作</a>
         <a href="#order-hall">订单大厅</a>
         <a href="#rewards">代币奖励</a>
@@ -219,8 +185,11 @@
           <button class="flex-1 rounded-full border border-slate-700 px-3 py-1.5 text-xs">
             文档
           </button>
-          <button class="flex-1 rounded-full border border-slate-700 px-3 py-1.5 text-xs text-slate-200">
-            资产 / 网络（Demo）
+          <button
+            id="connectWalletBtnMobile"
+            class="flex-1 rounded-full border border-emerald-400/60 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-200"
+          >
+            连接钱包
           </button>
         </div>
       </nav>
@@ -231,11 +200,15 @@
   <main class="mx-auto max-w-6xl px-4 pb-16 pt-10 lg:px-0 lg:pt-14">
 
     <!-- 捐赠模块 -->
-    <section id="donate" class="mt-16">
-      <div class="glass rounded-3xl border border-slate-800/80 px-6 py-6 lg:px-10 lg:py-8">
+    <section id="donate" class="mt-10">
+      <div class="gradient-border glass relative overflow-hidden rounded-3xl border border-cyan-500/40 px-6 py-6 lg:px-10 lg:py-8">
         <!-- 顶部标题 -->
         <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
+            <div class="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 px-3 py-1 text-[11px] text-cyan-300 mb-3">
+              <span class="h-1.5 w-1.5 rounded-full bg-cyan-400 badge-dot"></span>
+              Genesis 支持轮 · 早期贡献者将作为空投与 veNST 分配的重要参考
+            </div>
             <h2 class="text-xl font-semibold text-white sm:text-2xl">
               捐赠 · 一起把 NST 的非标基础设施搭起来
             </h2>
@@ -247,6 +220,15 @@
           <div class="mt-2 text-xs text-slate-400 lg:text-right">
             <div>当前阶段：Genesis 支持轮</div>
             <div>目标：用于完成 Demo DApp + 安全审计的第一笔资金</div>
+            <div class="mt-3 w-full max-w-xs lg:ml-auto">
+              <div class="mb-1 flex items-center justify-between text-[11px]">
+                <span>已筹：12,300 USDT（示例）</span>
+                <span>目标：50,000 USDT</span>
+              </div>
+              <div class="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+                <div class="h-full w-[24%] rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500"></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -258,61 +240,70 @@
               DONATE
             </div>
             <h3 class="mt-2 text-sm font-semibold text-white">
-              输入你想捐赠的金额（以后将支持 USDT / BNB / NST）
+              输入你想捐赠的金额（当前 Demo 支持使用当前网络主币捐赠，如 BNB）
             </h3>
 
             <!-- 金额输入 -->
             <div class="mt-4 space-y-2 text-sm">
               <label class="flex items-center justify-between text-xs text-slate-300">
                 <span>捐赠金额</span>
-                <span class="text-slate-500 text-[11px]">（示例：100、500、1000）</span>
+                <span class="text-slate-500 text-[11px]">（示例：0.1、0.5、1）</span>
               </label>
               <div class="flex items-center gap-2">
                 <input
+                  id="donateAmount"
                   type="number"
-                  placeholder="例如：100"
+                  step="0.0001"
+                  min="0"
+                  placeholder="例如：0.1"
                   class="w-full rounded-2xl border border-slate-700/80 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-cyan-400 focus:outline-none"
                 />
                 <select
+                  id="donateToken"
                   class="rounded-2xl border border-slate-700/80 bg-slate-900/80 px-3 py-2 text-xs text-slate-100 focus:border-cyan-400 focus:outline-none"
                 >
-                  <option>USDT</option>
-                  <option>BNB</option>
-                  <option>NST</option>
+                  <option value="NATIVE">当前网络主币</option>
+                  <option value="USDT">USDT（稍后接入）</option>
+                  <option value="NST">NST（预留）</option>
                 </select>
               </div>
 
               <!-- 快捷档位 -->
               <div class="mt-3 flex flex-wrap gap-2 text-xs">
-                <button class="rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
-                  50
+                <button type="button" data-amount="0.05" class="quick-amount rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
+                  0.05
                 </button>
-                <button class="rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
-                  100
+                <button type="button" data-amount="0.1" class="quick-amount rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
+                  0.1
                 </button>
-                <button class="rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
-                  500
+                <button type="button" data-amount="0.5" class="quick-amount rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
+                  0.5
                 </button>
-                <button class="rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
-                  1000
+                <button type="button" data-amount="1" class="quick-amount rounded-full border border-slate-700/80 px-3 py-1 hover:border-cyan-400 hover:text-cyan-300">
+                  1
                 </button>
               </div>
             </div>
 
-            <!-- 连接钱包 + 提交按钮（现在先当样子，用来以后接合约） -->
+            <!-- 连接钱包 + 提交按钮 -->
             <div class="mt-5 space-y-2 text-xs">
               <button
+                id="donateConnectBtn"
+                type="button"
                 class="w-full rounded-full border border-slate-600/80 px-4 py-2 text-xs font-medium text-slate-200 hover:border-slate-300 hover:text-white"
               >
-                连接钱包（稍后接入）
+                连接钱包
               </button>
               <button
+                id="donateSubmitBtn"
+                type="button"
                 class="w-full rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 px-4 py-2 text-xs font-semibold text-slate-950 shadow-lg shadow-blue-500/40"
               >
-                确认捐赠（当前为 Demo 按钮）
+                确认捐赠（真实发起链上交易）
               </button>
               <p class="text-[11px] text-slate-500">
-                当前版本仅为界面 Demo，用于演示捐赠流程。后续将接入真实链上合约与多链资产。
+                当前版本已支持使用当前网络主币（如 BNB）向指定地址发起捐赠交易。
+                USDT / NST 捐赠将在后续版本接入合约后开放。
               </p>
             </div>
           </div>
@@ -356,15 +347,15 @@
               <div class="mt-3 space-y-2 text-xs">
                 <div class="flex items-center justify-between rounded-xl bg-slate-900/80 px-3 py-2">
                   <span class="text-slate-300">0x12...ab9f</span>
-                  <span class="text-slate-400">捐赠 150 USDT · Supporter</span>
+                  <span class="text-slate-400">捐赠 0.5 BNB · Supporter</span>
                 </div>
                 <div class="flex items-center justify-between rounded-xl bg-slate-900/80 px-3 py-2">
                   <span class="text-slate-300">0x9c...73e2</span>
-                  <span class="text-slate-400">捐赠 600 USDT · Builder</span>
+                  <span class="text-slate-400">捐赠 1.2 BNB · Builder</span>
                 </div>
                 <div class="flex items-center justify-between rounded-xl bg-slate-900/80 px-3 py-2">
                   <span class="text-slate-300">0xa7...ff01</span>
-                  <span class="text-slate-400">捐赠 2200 USDT · Genesis Seat</span>
+                  <span class="text-slate-400">捐赠 3.0 BNB · Genesis Seat</span>
                 </div>
               </div>
             </div>
@@ -381,9 +372,8 @@
       </div>
     </section>
 
-    <!-- 订单大厅模块（新的、唯一的） -->
+    <!-- 订单大厅模块 -->
     <section id="order-hall" class="mt-16 glass rounded-3xl border border-slate-800/80 p-6">
-      <!-- ① 顶部标题 + 右侧按钮 -->
       <div class="mb-4 flex items-center justify-between">
         <div>
           <h2 class="text-xl font-semibold text-white">NST 订单大厅</h2>
@@ -394,40 +384,34 @@
         </button>
       </div>
 
-      <!-- ② Tab 导航按钮 -->
       <div class="mb-4 flex gap-3">
         <button class="rounded-full bg-slate-800 px-4 py-1.5 text-xs text-slate-200">全部订单</button>
         <button class="rounded-full bg-slate-900 px-4 py-1.5 text-xs text-slate-400">期权订单</button>
         <button class="rounded-full bg-slate-900 px-4 py-1.5 text-xs text-slate-400">CFD订单</button>
       </div>
 
-      <!-- ③ 筛选区 -->
       <div class="glass mb-4 grid gap-3 rounded-2xl border border-slate-700/80 p-4 lg:grid-cols-4">
         <select class="rounded-xl bg-slate-900 px-3 py-2 text-sm text-slate-200">
           <option>市场（Market）</option>
           <option>中国 A 股</option>
           <option>美国 NASDAQ</option>
         </select>
-
         <select class="rounded-xl bg-slate-900 px-3 py-2 text-sm text-slate-200">
           <option>角色</option>
           <option>买方</option>
           <option>卖方</option>
         </select>
-
         <select class="rounded-xl bg-slate-900 px-3 py-2 text-sm text-slate-200">
           <option>结构/方向</option>
           <option>看涨</option>
           <option>看跌</option>
         </select>
-
         <select class="rounded-xl bg-slate-900 px-3 py-2 text-sm text-slate-200">
           <option>标的</option>
           <option>TSLA / 特斯拉</option>
         </select>
       </div>
 
-      <!-- ④ 表格 / 列表 -->
       <div class="glass rounded-2xl border border-slate-800/80 p-4 text-xs">
         <div class="mb-2 grid grid-cols-5 text-slate-400">
           <span>结构</span>
@@ -437,7 +421,6 @@
           <span>操作</span>
         </div>
 
-        <!-- 示例订单 1 -->
         <div class="mb-2 grid grid-cols-5 items-center rounded-xl bg-slate-900/80 p-3 text-slate-200">
           <span>欧式看涨</span>
           <span>TSLA / NASDAQ</span>
@@ -448,7 +431,6 @@
           </button>
         </div>
 
-        <!-- 示例订单 2 -->
         <div class="grid grid-cols-5 items-center rounded-xl bg-slate-900/80 p-3 text-slate-200">
           <span>区间策略</span>
           <span>BTC / Binance</span>
@@ -461,7 +443,7 @@
       </div>
     </section>
 
-    <!-- HERO 区 -->
+    <!-- HERO 区（保持不变） -->
     <section class="relative hero-grid mt-16 overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-950/70 px-6 py-10 shadow-2xl shadow-blue-900/60 lg:flex lg:items-center lg:gap-10 lg:px-10 lg:py-14">
       <!-- 左 -->
       <div class="relative z-10 max-w-xl space-y-6">
@@ -482,7 +464,6 @@
           全流程上链，保证金、订单、结算逻辑全部公开透明，让买卖双方在规则清晰的环境下公平博弈。
         </p>
 
-        <!-- CTA & 小字（按钮互通） -->
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
           <a href="#order-hall" class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-blue-500/40">
             立即查看订单大厅
@@ -508,13 +489,12 @@
         </div>
       </div>
 
-      <!-- 右：发光卡片/仪表盘示意（保持不变） -->
+      <!-- 右：发光卡片/仪表盘示意 -->
       <div class="relative mt-10 flex-1 lg:mt-0">
         <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-cyan-400/20 blur-3xl"></div>
         <div class="absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-indigo-500/30 blur-3xl"></div>
 
         <div class="relative glass gradient-border mx-auto max-w-md rounded-3xl border border-slate-700/80 p-4">
-          <!-- 顶部 tab -->
           <div class="mb-3 flex items-center justify-between text-xs text-slate-400">
             <div class="inline-flex items-center gap-1 rounded-full bg-slate-900/80 px-1 py-1">
               <button class="rounded-full bg-slate-800 px-3 py-1 text-[11px] text-slate-100">
@@ -530,7 +510,6 @@
             </span>
           </div>
 
-          <!-- 中间 stats -->
           <div class="mb-4 grid grid-cols-3 gap-3 text-xs">
             <div class="rounded-2xl bg-slate-900/80 p-3">
               <div class="text-slate-400">池子总规模</div>
@@ -549,7 +528,6 @@
             </div>
           </div>
 
-          <!-- Order list -->
           <div class="mb-3 flex items-center justify-between text-xs text-slate-400">
             <span>正在撮合的非标订单示例</span>
             <span class="rounded-full bg-slate-900/80 px-2 py-0.5 text-[10px] text-slate-300">
@@ -558,7 +536,6 @@
           </div>
 
           <div class="space-y-2 text-xs">
-            <!-- row 1 -->
             <div class="flex items-center justify-between rounded-2xl bg-slate-900/80 px-3 py-2.5">
               <div>
                 <div class="flex items-center gap-2">
@@ -576,7 +553,7 @@
                 <div class="text-[10px] text-slate-400">LTV 62% · A- 评级</div>
               </div>
             </div>
-            <!-- row 2 -->
+
             <div class="flex items-center justify-between rounded-2xl bg-slate-900/80 px-3 py-2.5">
               <div>
                 <div class="flex items-center gap-2">
@@ -594,7 +571,7 @@
                 <div class="text-[10px] text-slate-400">最大赔付 30% · BBB+</div>
               </div>
             </div>
-            <!-- row 3 -->
+
             <div class="flex items-center justify-between rounded-2xl bg-slate-900/80 px-3 py-2.5">
               <div>
                 <div class="flex items-center gap-2">
@@ -614,7 +591,6 @@
             </div>
           </div>
 
-          <!-- 底部按钮 -->
           <div class="mt-4 flex items-center justify-between text-[11px] text-slate-300">
             <span>3 步完成一张非标合约。</span>
             <a href="#order-hall" class="inline-flex items-center gap-1 rounded-full bg-slate-50/90 px-3 py-1 text-[11px] font-semibold text-slate-900">
@@ -627,6 +603,9 @@
         </div>
       </div>
     </section>
+
+    <!-- 下面的 How / Products / Rewards / Why / Community / FAQ / 底部 CTA 同你原来一致，我就不注释了 -->
+    <!-- 为了完整复制，我保留原结构不改动 -->
 
     <!-- 合作/背书 -->
     <section class="mt-10">
@@ -658,7 +637,6 @@
       </div>
 
       <div class="mt-6 grid gap-6 md:grid-cols-3">
-        <!-- Step 1 -->
         <div class="glass rounded-2xl border border-slate-800/80 p-4">
           <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-cyan-500/10 px-2 py-1 text-[11px] text-cyan-300">
             <span class="flex h-4 w-4 items-center justify-center rounded-full bg-cyan-500 text-[10px] text-slate-950">1</span>
@@ -675,13 +653,12 @@
           </ul>
         </div>
 
-        <!-- Step 2 -->
         <div class="glass rounded-2xl border border-slate-800/80 p-4">
           <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-indigo-500/10 px-2 py-1 text-[11px] text-indigo-300">
             <span class="flex h-4 w-4 items-center justify-center rounded-full bg-indigo-500 text-[10px] text-slate-950">2</span>
             卖方流程
           </div>
-          <h3 class="text-sm font-semibold text白">已质押的卖方进入区间内竞价</h3>
+          <h3 class="text-sm font-semibold text-white">已质押的卖方进入区间内竞价</h3>
           <p class="mt-2 text-xs text-slate-300">
             通过资格筛选的卖方，将保证金注入池子，在买方可接受的区间内报出自己的权利金要求。
           </p>
@@ -692,7 +669,6 @@
           </ul>
         </div>
 
-        <!-- Step 3 -->
         <div class="glass rounded-2xl border border-slate-800/80 p-4">
           <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-2 py-1 text-[11px] text-emerald-300">
             <span class="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-slate-950">3</span>
@@ -725,7 +701,6 @@
       </div>
 
       <div class="mt-6 grid gap-6 md:grid-cols-3">
-        <!-- Card 1 -->
         <div class="glass rounded-2xl border border-slate-800/80 p-4">
           <div class="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-300">
             OTC OPTIONS
@@ -751,7 +726,6 @@
           </button>
         </div>
 
-        <!-- Card 2 -->
         <div class="glass rounded-2xl border border-slate-800/80 p-4">
           <div class="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-300">
             NAV &amp; REVENUE FLOORS
@@ -777,7 +751,6 @@
           </button>
         </div>
 
-        <!-- Card 3 -->
         <div class="glass rounded-2xl border border-slate-800/80 p-4">
           <div class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-300">
             DAO &amp; TREASURY
@@ -901,7 +874,7 @@
       </div>
     </section>
 
-    <!-- Community / testimonial -->
+    <!-- Community -->
     <section id="community" class="mt-16">
       <div class="glass rounded-3xl border border-slate-800/80 p-6 lg:flex lg:items-center lg:justify-between lg:gap-8">
         <div class="max-w-md">
@@ -1022,8 +995,14 @@
     </div>
   </footer>
 
-  <!-- 简单移动端菜单 + 钱包面板脚本 -->
+  <!-- 右下角悬浮捐赠按钮 -->
+  <a href="#donate" class="fixed bottom-5 right-5 z-40 rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 px-4 py-2 text-[11px] font-semibold text-slate-950 shadow-lg shadow-blue-500/40">
+    支持 NST · 捐赠
+  </a>
+
+  <!-- 简单交互脚本：移动端菜单 / 连接钱包 / 捐赠交易 -->
   <script>
+    // ====== 移动端菜单 ======
     const btn = document.getElementById('mobileMenuBtn');
     const menu = document.getElementById('mobileMenu');
     if (btn && menu) {
@@ -1032,18 +1011,116 @@
       });
     }
 
-    const walletBtn = document.getElementById('walletTrigger');
-    const walletPanel = document.getElementById('walletPanel');
-    if (walletBtn && walletPanel) {
-      walletBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        walletPanel.classList.toggle('hidden');
+    // ====== 钱包连接 & 状态 ======
+    let currentAccount = null;
+
+    function shortAddress(addr) {
+      if (!addr) return '连接钱包';
+      return addr.slice(0, 6) + '...' + addr.slice(-4);
+    }
+
+    function updateWalletButtons() {
+      const text = shortAddress(currentAccount);
+      const ids = ['connectWalletBtn', 'connectWalletBtnMobile', 'donateConnectBtn'];
+      ids.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
       });
-      walletPanel.addEventListener('click', (e) => {
-        e.stopPropagation();
+    }
+
+    async function connectWallet() {
+      if (!window.ethereum) {
+        alert('未检测到钱包，请先安装 MetaMask / TokenPocket / OKX 等钱包扩展。');
+        return;
+      }
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if (accounts && accounts.length > 0) {
+          currentAccount = accounts[0];
+          updateWalletButtons();
+        }
+      } catch (err) {
+        console.error(err);
+        alert('连接钱包失败：' + (err.message || err));
+      }
+    }
+
+    ['connectWalletBtn', 'connectWalletBtnMobile', 'donateConnectBtn'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('click', connectWallet);
+      }
+    });
+
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', (accounts) => {
+        currentAccount = accounts[0] || null;
+        updateWalletButtons();
       });
-      document.addEventListener('click', () => {
-        walletPanel.classList.add('hidden');
+    }
+
+    // ====== 捐赠逻辑（使用当前网络主币，如 BNB） ======
+    const DONATION_ADDRESS = '0xd140287e013df5c1eb2996661a86d2e6169b9467'; // TODO: 在这里填你的收款地址
+
+    async function donate() {
+      const amountInput = document.getElementById('donateAmount');
+      const tokenSelect = document.getElementById('donateToken');
+
+      if (!amountInput || !tokenSelect) return;
+
+      const raw = (amountInput.value || '').trim();
+      const token = tokenSelect.value;
+
+      if (!raw || Number(raw) <= 0) {
+        alert('请输入正确的捐赠金额');
+        return;
+      }
+
+      if (!window.ethereum) {
+        alert('请先安装钱包（MetaMask / TP 等），再进行捐赠。');
+        return;
+      }
+      if (!currentAccount) {
+        alert('请先连接钱包，再进行捐赠。');
+        return;
+      }
+
+      if (token !== 'NATIVE') {
+        alert('当前 Demo 版本仅支持使用当前网络主币（如 BNB）捐赠，USDT / NST 将在后续版本接入。');
+        return;
+      }
+
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+
+        const tx = await signer.sendTransaction({
+          to: DONATION_ADDRESS,
+          value: ethers.utils.parseEther(raw)
+        });
+
+        alert('捐赠交易已发送，Tx Hash：\n' + tx.hash);
+      } catch (err) {
+        console.error(err);
+        const msg = err && (err.data && err.data.message ? err.data.message : err.message || String(err));
+        alert('捐赠失败：' + msg);
+      }
+    }
+
+    const donateBtn = document.getElementById('donateSubmitBtn');
+    if (donateBtn) {
+      donateBtn.addEventListener('click', donate);
+    }
+
+    // ====== 捐赠快捷金额填充 ======
+    const amountInput = document.getElementById('donateAmount');
+    const quickButtons = document.querySelectorAll('.quick-amount');
+    if (amountInput && quickButtons.length) {
+      quickButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const value = btn.getAttribute('data-amount');
+          amountInput.value = value || '';
+        });
       });
     }
   </script>
