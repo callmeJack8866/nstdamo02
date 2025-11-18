@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>NST – 买方建仓模块 Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50:  '#ecfeff',
+              100: '#cffafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8'
+            },
+            dark: {
+              900: '#020617',
+              800: '#020617'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at top, rgba(56,189,248,0.18), transparent 55%),
+                  radial-gradient(circle at bottom, rgba(129,140,248,0.18), transparent 55%),
+                  #020617;
+      color: #e2e8f0;
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+
+  <!-- 整个买方建仓模块 -->
+  <main class="mx-auto max-w-6xl px-4 py-8 lg:py-12">
+
+    <!-- 标题 + 顶部说明 -->
+    <header class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-300">
+          BUY-SIDE BUILDER · 买方建仓
+        </p>
+        <h1 class="mt-2 text-2xl font-semibold tracking-tight text-slate-50 lg:text-3xl">
+          买方建仓入口结构化你的第一笔「非标订单」
+        </h1>
+        <p class="mt-3 max-w-2xl text-sm text-slate-300">
+          按顺序填完下面的条款要素：标的、触发条件、期限、权利金区间、赔付逻辑。
+          NST 会把你的自然语言需求，拆解成链上参数，供卖方竞价。
+        </p>
+      </div>
+
+      <!-- 顶部右侧小状态卡 -->
+      <div class="mt-4 flex gap-3 lg:mt-0">
+        <div class="rounded-2xl border border-slate-800 bg-slate-950/60 px-4 py-3 text-xs">
+          <div class="flex items-center justify-between gap-4">
+            <span class="text-slate-400">模拟网络</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-400">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+              Testnet Ready
+            </span>
+          </div>
+          <p class="mt-2 text-slate-300">连接钱包后，可直接对接你的测试网 DApp。</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主体两列布局 -->
+    <section class="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+
+      <!-- 左侧：表单（买方视角建仓） -->
+      <div class="space-y-6 rounded-3xl border border-slate-800/80 bg-slate-950/70 p-4 shadow-lg shadow-slate-900/60 lg:p-6">
+        <!-- Tab 导航：订单类型 -->
+        <div class="mb-3 flex flex-wrap gap-2">
+          <button
+            type="button"
+            class="rounded-full bg-primary-600 px-4 py-1.5 text-xs font-medium text-white shadow-sm shadow-primary-700/50">
+            场外期权
+          </button>
+          <button
+            type="button"
+            class="rounded-full bg-slate-900 px-4 py-1.5 text-xs text-slate-300">
+            CFD 差价合约
+          </button>
+          <button
+            type="button"
+            class="rounded-full bg-slate-900 px-4 py-1.5 text-xs text-slate-300">
+           收益保底
+          </button>
+          <button
+            type="button"
+            class="rounded-full bg-slate-900 px-4 py-1.5 text-xs text-slate-300">
+            自定义结构
+          </button>
+        </div>
+
+        <!-- Step 1 基本信息 -->
+        <div class="space-y-3 rounded-2xl border border-slate-800/80 bg-slate-900/70 p-4">
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary-600 text-[11px] font-semibold text-white">
+                1
+              </span>
+              <div>
+                <h2 class="text-sm font-semibold text-slate-50">此地重要</h2>
+                <p class="text-[11px] text-slate-400">
+                  标的名称，代码，交易场所，效验价格需要仔核对。
+                </p>
+              </div>
+            </div>
+          </div>
+
+         <!-- Step 1 · 标的与基本参数 -->
+<div class="space-y-4 rounded-2xl border border-slate-800/80 bg-slate-900/70 p-4">
+  <div class="flex items-center gap-2">
+    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary-600 text-[11px] font-semibold text-white">
+      1
+    </span>
+    <div>
+      <h2 class="text-sm font-semibold text-slate-50">标的与基本参数</h2>
+      <p class="text-[11px] text-slate-400">
+        决定订单核心资产属性，支持自动估值、汇率换算、价格校验。
+      </p>
+    </div>
+  </div>
+
+  <!-- 表单字段 -->
+  <div class="grid gap-4 md:grid-cols-2">
+
+    <!-- 标的名称 -->
+    <div class="space-y-1.5">
+      <label class="text-xs text-slate-300">标的名称/代码</label>
+      <input
+        id="underlyingType"
+        type="text"
+        placeholder="例：平安银行 / 600434"
+        class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-primary-500">
+      </in>
+    </div>
+
+    <!-- 标的名称 -->
+    <div class="space-y-1.5">
+      <label class="text-xs text-slate-300">国家/交易场所</label>
+      <input
+        id="underlyingName"
+        type="text"
+        placeholder="例：中国 / A股"
+        class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-primary-500" />
+    </div>
+
+    <!-- 市场 / 区域 -->
+    <div class="space-y-1.5">
+      <label class="text-xs text-slate-300">交易方向/CALL</label>
+      <select
+        id="market"
+        class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-primary-500">
+        <option>看涨/call</option>
+        <option>看跌/PUT</option>
+        
+      </select> 
+    </div>
+
+    <!-- 当前价格 -->
+    <div class="space-y-1.5">
+      <label class="text-xs text-slate-300">标的资产当前价格（用于校验）</label>
+      <div class="flex items-center gap-2">
+        <input
+          id="currentPrice"
+          type="number"
+          placeholder="例：8.50"
+          class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-primary-500" />
+        <select
+          id="priceCurrency"
+          class="min-w-[80px] rounded-xl border border-slate-700 bg-slate-950 px-2 py-2 text-xs text-slate-100 outline-none focus:border-primary-500">
+          <option>HKD</option>
+          <option>CNY</option>
+          <option>JPY</option>
+          <option>USDT</option>
+        </select>
+      </div>
+      <p class="text-[10px] text-slate-500">（将用于估值验证、自动换算）</p>
+    </div>
+
+    <!-- 汇率 -->
+    <div class="space-y-1.5">
+      <label class="text-xs text-slate-300">汇率（用于换算名义本金）</label>
+      <div class="flex items-center gap-2">
+        <input
+          id="fxRate"
+          type="number"
+          step="0.0001"
+          placeholder="例：1 USD = 7.26 CNY"
+          class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-primary-500" />
+        <span class="text-xs text-slate-700 whitespace-nowrap">
+          </span>
+      </div>
+    </div>
+
+    <!-- 名义本金 -->
+    <div class="space-y-1.5">
+      <label class="text-xs text-slate-300">名义本金（可自动换算）</label>
+      <div class="flex gap-2">
+        <input
+          id="notional"
+          type="number"
+          min="0"
+          placeholder="例：100万"
+          class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-primary-500" />
+        <select
+          id="notionalCurrency"
+          class="min-w-[80px] rounded-xl border border-slate-700 bg-slate-950 px-2 py-2 text-xs text-slate-100 outline-none focus:border-primary-500">
+          <option>USD</option>
+          <option>USDT</option>
+          <option>USDC</option>
+          
+         </select>
+      </div>
+    </div>
+
+    <!-- 买方估值区间（min） -->
+    <div class="space-y-1.5">
+      <label class="text-xs text-slate-300">接受费率上线</label>
+      <input
+        id="buyerValMin"
+        type="number"
+        step="0.01"
+        placeholder="例：7.80%"
+        class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-primary-500" />
+    </div>
+
+    <!-- 买方估值区间（max） -->
+    <div class="space-y-1.5">
+      <label class="text-xs text-slate-300">接受费率上线</label>
+      <input
+        id="buyerValMax"
+        type="number"
+        step="0.01"
+        placeholder="例：9.20%"
+        class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-primary-500" />
+    </div>
+
+  </div>
+</div>
+
+        <!-- Step 2 期限与权利金 -->
+        <div class="space-y-3 rounded-2xl border border-slate-800/80 bg-slate-900/70 p-4">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary-600 text-[11px] font-semibold text-white">
+              
+            
+            <div>
+               
+            </div>
+          </div>
+
+          <div class="grid gap-3 md:grid-cols-3">
+            <div class="space-y-1.5 md:col-span-1">
+              <label class="text-xs text-slate-300">合约期限</label>
+              <div class="flex items-center gap-2">
+                <input
+                  id="tenorValue"
+                  type="number"
+                  min="1"
+                  placeholder="3"
+                  class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-primary-500" />
+                <select
+                  id="tenorUnit"
+                  class="rounded-xl border border-slate-700 bg-slate-950 px-2 py-2 text-xs text-slate-100 outline-none focus:border-primary-500">
+                  <option>月</option>
+                  <option>天</option>
+                  <option>年</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-xs text-slate-300">开始日期</label>
+              <input
+                id="premiumMin"
+                type="number"
+                min="0"
+                step="0.1"
+                placeholder="日/月/年"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-primary-500" />
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-xs text-slate-300">结束日期
+              <input
+                id="premiumMax"
+                type="number"
+                min="0"
+                step="0.1"
+                placeholder="日/月/年"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-primary-500" />
+            </div>
+          </div>
+
+          <div class="grid gap-3 md:grid-cols-2">
+            <div class="space-y-1.5">
+              <label class="text-xs text-slate-300">支付资产</label>
+              <select
+                id="payAsset"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-primary-500">
+                <option>USDT（BSC）</option>
+                <option>USDC（BSC）</option>
+                <option>BUSD</option>
+                <option>其他稳定币</option>
+              </select>
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-xs text-slate-300">支付方式</label>
+              <select
+                id="payMode"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-primary-500">
+                <option>一次性支付全额权利金</option>
+                
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 触发条件 & 赔付逻辑 -->
+        <div class="space-y-3 rounded-2xl border border-slate-800/80 bg-slate-900/70 p-4">
+          <div class="flex items-center gap-2">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-primary-600 text-[11px] font-semibold text-white">
+              3
+            </span>
+            <div>
+              <h2 class="text-sm font-semibold text-slate-50">触发条件 & 赔付逻辑</h2>
+              <p class="text-[11px] text-slate-400">
+                用自然语言写清楚事件何时触发、如何赔付，系统会在后台结构化。
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs text-slate-300">触发条件（Trigger Events）</label>
+            <textarea
+              id="triggerCondition"
+              rows="3"
+              placeholder="例：若下一轮融资估值较本轮下跌 ≥ 20%，则视为触发赔付事件。"
+              class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm leading-relaxed text-slate-100 placeholder:text-slate-500 outline-none focus:border-primary-500"></textarea>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs text-slate-300">赔付逻辑（Payout Formula）</label>
+            <textarea
+              id="payoutLogic"
+              rows="3"
+              placeholder="例：触发时，卖方按名义本金 × 实际跌幅部分（最多 30%）一次性补足差额。"
+              class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm leading-relaxed text-slate-100 placeholder:text-slate-500 outline-none focus:border-primary-500"></textarea>
+          </div>
+
+          <div class="grid gap-3 md:grid-cols-2">
+            <div class="space-y-1.5">
+              <label class="text-xs text-slate-300">喂价 / 判定模式</label>
+              <select
+                id="oracleMode"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-primary-500">
+                <option>喂价员 + 白名单</option>
+                <option>仲裁委员会（多签投票）</option>
+                <option>外部审计报告哈希上链</option>
+              </select>
+            </div>
+            <div class="space-y-1.5">
+              <label class="text-xs text-slate-300">选择卖方身份</label>
+              <select
+                id="settleAsset"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-primary-500">
+                <option>自由卖方</option>
+                <option>平台卖方</option>
+                <option>自由+平台卖方</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部操作按钮 -->
+        <div class="flex flex-col gap-3 border-t border-slate-800 pt-4 md:flex-row md:items-center md:justify-between">
+          <!-- 左：小提示 -->
+          <div class="flex items-start gap-3 text-xs text-slate-400">
+            <div class="mt-0.5 h-6 w-6 rounded-full bg-slate-800/80 text-[11px] text-cyan-300 flex items-center justify-center">
+              i
+            </div>
+            <p class="max-w-md">
+              提交后，系统会生成结构化的订单草稿（order struct），你可以在 DApp 中确认参数并签名。
+            </p>
+          </div>
+
+          <!-- 右：操作按钮 -->
+          <div class="flex w-full gap-3 pt-2 md:w-auto md:pt-0">
+            <button
+              type="button"
+              class="flex-1 rounded-2xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-xs font-medium text-slate-200 hover:bg-slate-800 md:flex-none"
+              onclick="previewOrder()">
+              预览链上参数
+            </button>
+            <button
+              type="button"
+              class="flex-1 rounded-2xl bg-primary-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-primary-700/40 hover:bg-primary-500 md:flex-none"
+              onclick="submitOrder()">
+              一键发起买方建仓（Demo）
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧：订单预览 & 合约要素展示 -->
+      <aside class="space-y-4">
+        <!-- 预览卡片 -->
+        <div class="rounded-3xl border border-slate-800/80 bg-slate-950/80 p-4 shadow-md shadow-slate-900/70">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400">
+                ORDER DRAFT · 链上草稿
+              </p>
+              <h2 class="mt-1 text-sm font-semibold text-slate-50">
+                买方非标订单预览
+              </h2>
+            </div>
+            <span class="rounded-full bg-emerald-500/10 px-3 py-1 text-[10px] font-medium text-emerald-400">
+              Struct Ready
+            </span>
+          </div>
+
+          <div class="mt-4 space-y-3 text-xs" id="orderPreview">
+            <!-- 这里通过 JS 填充预览内容 -->
+            <p class="text-slate-400">
+              在左侧输入条款后，这里会生成一段「人类可读」+「合约可解析」的摘要，方便你与卖方和风控团队沟通。
+            </p>
+          </div>
+
+          <div class="mt-4 rounded-2xl bg-slate-900/70 p-3 text-[11px] text-slate-400">
+            <p class="mb-1 font-medium text-slate-300">合约核心字段示例（链上 struct）</p>
+            <pre class="mt-1 overflow-x-auto text-[10px] leading-relaxed text-slate-400">
+struct Order {
+    address buyer;
+    bytes32 underlyingType;
+    string  underlyingName;
+    string  market;
+    uint256 notional;
+    bytes32 notionalCurrency;
+    uint32  tenor;          // 单位：天
+    uint16  premiumMinBps;  // 500 = 5.00%
+    uint16  premiumMaxBps;  // 800 = 8.00%
+    bytes32 payAsset;
+    bytes32 payMode;
+    bytes32 oracleMode;
+    bytes32 settleAsset;
+    string  triggerText;
+    string  payoutText;
+}
+            </pre>
+          </div>
+        </div>
+
+        <!-- 小提示卡：接 DApp 的地方 -->
+        <div class="rounded-2xl border border-slate-800/80 bg-slate-950/80 p-3 text-[11px] text-slate-400">
+          <p class="font-medium text-slate-300">如何「一键上 DApp」？</p>
+          <ul class="mt-1 list-disc space-y-1 pl-4">
+            <li>把上面的表单值映射成 <code>Order</code> 结构体参数。</li>
+            <li>前端通过钱包（如 MetaMask / OKX）调用 <code>createOrder(order)</code>。</li>
+            <li>成功后返回 <code>orderId</code>，跳转到订单详情页或订单大厅。</li>
+          </ul>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <!-- 简单 JS：更新预览 & Demo 提交 -->
+  <script>
+    function previewOrder() {
+      const underlyingType = document.getElementById('underlyingType').value;
+      const underlyingName = document.getElementById('underlyingName').value || '（未填写标的名称）';
+      const market          = document.getElementById('market').value;
+      const notional        = document.getElementById('notional').value || '—';
+      const notionalCurrency= document.getElementById('notionalCurrency').value;
+      const tenorValue      = document.getElementById('tenorValue').value || '—';
+      const tenorUnit       = document.getElementById('tenorUnit').value;
+      const premiumMin      = document.getElementById('premiumMin').value || '—';
+      const premiumMax      = document.getElementById('premiumMax').value || '—';
+      const payAsset        = document.getElementById('payAsset').value;
+      const payMode         = document.getElementById('payMode').value;
+      const triggerText     = document.getElementById('triggerCondition').value || '（未填写触发条件）';
+      const payoutText      = document.getElementById('payoutLogic').value || '（未填写赔付逻辑）';
+      const oracleMode      = document.getElementById('oracleMode').value;
+      const settleAsset     = document.getElementById('settleAsset').value;
+
+      const html = `
+        <div class="space-y-1.5">
+          <p class="text-slate-400">标的</p>
+          <p class="text-[13px] font-medium text-slate-100">
+            ${underlyingType} · ${underlyingName}
+          </p>
+          <p class="text-[11px] text-slate-500">
+            市场 / 地区：${market}
+          </p>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-[11px]">
+          <div class="space-y-1">
+            <p class="text-slate-400">名义本金</p>
+            <p class="font-medium text-slate-100">${notional} ${notionalCurrency}</p>
+          </div>
+          <div class="space-y-1">
+            <p class="text-slate-400">期限</p>
+            <p class="font-medium text-slate-100">${tenorValue} ${tenorUnit}</p>
+          </div>
+          <div class="space-y-1">
+            <p class="text-slate-400">期望权利金区间</p>
+            <p class="font-medium text-slate-100">${premiumMin}% – ${premiumMax}%（全期）</p>
+          </div>
+          <div class="space-y-1">
+            <p class="text-slate-400">支付 / 结算</p>
+            <p class="font-medium text-slate-100">${payAsset} · ${payMode}</p>
+            <p class="text-slate-500">结算资产：${settleAsset}</p>
+          </div>
+        </div>
+        <div class="space-y-1 mt-2">
+          <p class="text-slate-400">触发条件</p>
+          <p class="text-[11px] leading-relaxed text-slate-100">${triggerText}</p>
+        </div>
+        <div class="space-y-1 mt-1">
+          <p class="text-slate-400">赔付逻辑</p>
+          <p class="text-[11px] leading-relaxed text-slate-100">${payoutText}</p>
+        </div>
+        <div class="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+          <span>喂价 / 判定：${oracleMode}</span>
+          <span>草稿状态：待签名</span>
+        </div>
+      `;
+
+      document.getElementById('orderPreview').innerHTML = html;
+    }
+
+    function submitOrder() {
+      // 这里只是示意，真正接 DApp 时改成调用钱包 + 合约方法
+      alert('Demo：已生成买方订单草稿。\n\n下一步：在你的 DApp 中用这些参数调用 createOrder(orderStruct)。');
+    }
+  </script>
+</body>
+</html>
