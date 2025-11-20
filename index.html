@@ -534,7 +534,249 @@
 
         </div>
       </div>
-    </section>
+    </section><!-- 节点招募 + 推荐奖励板块（升级版） -->
+<section id="node-recruit"
+  class="relative mx-auto max-w-5xl px-4 py-12 lg:py-16">
+
+  <!-- 背景光效 -->
+  <div class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute -left-16 top-0 h-56 w-56 rounded-full bg-cyan-500/15 blur-3xl"></div>
+    <div class="absolute right-0 bottom-0 h-64 w-64 rounded-full bg-indigo-500/20 blur-3xl"></div>
+  </div>
+
+  <!-- 顶部标题 + 简介 -->
+  <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+    <div>
+      <div class="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/10 px-3 py-1 text-xs font-medium text-sky-300">
+        <span class="h-1.5 w-1.5 rounded-full bg-sky-400"></span>
+        阶段一 · 节点招募 & 推荐奖励
+      </div>
+      <h2 class="mt-4 text-2xl font-semibold tracking-tight text-slate-50 lg:text-3xl">
+        早期节点 · 一个地址 2000U · 推荐再拿 NST 奖励
+      </h2>
+      <p class="mt-2 max-w-2xl text-sm leading-relaxed text-slate-300">
+        在 NST Finance 启动阶段，我们仅开放少量早期节点名额。每个地址一次性投入
+        <span class="font-semibold text-sky-300">2000 USDT</span> 即可成为节点，
+        享受平台后续多维度分润与治理权益。
+        同时开放<span class="font-semibold text-emerald-300"> 节点推荐奖励 </span>，
+        帮你把共识扩散给真正懂非标的人。
+      </p>
+    </div>
+
+    <!-- 节点门槛小卡片 -->
+    <div class="mt-4 shrink-0 rounded-2xl border border-sky-500/40 bg-slate-900/70 px-5 py-4 text-right shadow-lg shadow-sky-900/30 lg:mt-0">
+      <div class="text-[11px] uppercase tracking-[0.18em] text-slate-400">
+        Node Entry
+      </div>
+      <div class="mt-1 text-3xl font-bold">
+        <span class="bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-400 bg-clip-text text-transparent">
+          2000 U
+        </span>
+      </div>
+      <div class="mt-1 text-xs text-slate-400">
+        / 每个地址（USDT · BSC 链）
+      </div>
+      <div class="mt-2 text-[11px] text-slate-500">
+        名额有限 · 先到先得
+      </div>
+    </div>
+  </div>
+
+  <!-- 主体：左文案 + 右操作区 -->
+  <div class="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2.3fr)]">
+    <!-- 左侧：节点权益 + 推荐规则 -->
+    <div class="space-y-5 rounded-2xl border border-slate-800/80 bg-slate-950/80 p-5 lg:p-6">
+      <div>
+        <h3 class="text-sm font-semibold text-slate-100">
+          成为节点，你将获得：
+        </h3>
+        <ul class="mt-3 space-y-3 text-sm text-slate-300">
+          <li class="flex gap-2">
+            <span class="mt-1 h-1.5 w-1.5 rounded-full bg-sky-400"></span>
+            <span>平台产生的<span class="font-semibold">手续费 & 收益分润优先权</span>（具体比例以正式规则为准）。</span>
+          </li>
+          <li class="flex gap-2">
+            <span class="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+            <span>参与<span class="font-semibold">治理投票</span>，对费率、池子结构、参数调整提出建议。</span>
+          </li>
+          <li class="flex gap-2">
+            <span class="mt-1 h-1.5 w-1.5 rounded-full bg-indigo-400"></span>
+            <span>优先参与<span class="font-semibold">新功能内测、限量活动、白名单空投</span>等。</span>
+          </li>
+          <li class="flex gap-2">
+            <span class="mt-1 h-1.5 w-1.5 rounded-full bg-fuchsia-400"></span>
+            <span>在 DApp 中展示专属<span class="font-semibold">节点身份标识（Node Badge）</span>。</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 推荐奖励说明 -->
+      <div class="rounded-2xl border border-emerald-500/40 bg-emerald-500/5 p-4">
+        <div class="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-300">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+          节点推荐奖励
+        </div>
+        <h3 class="mt-2 text-sm font-semibold text-emerald-100">
+          推荐节点 · 每个奖励 500 枚 NST
+        </h3>
+        <ul class="mt-2 space-y-1.5 text-xs leading-relaxed text-emerald-100/90">
+          <li>· 每成功推荐 <span class="font-semibold text-emerald-300">1 个符合条件的节点地址</span>，你将获得 <span class="font-semibold text-emerald-300">500 枚 NST 代币</span> 的奖励记录。</li>
+          <li>· 所有推荐奖励将在 <span class="font-semibold">NST 代币上线后统一发放</span>（空投至你的节点地址或绑定地址）。</li>
+          <li>· 系统将根据链上记录自动统计「节点地址」与「推荐关系」，透明可查。</li>
+        </ul>
+
+        <div class="mt-3 grid gap-3 text-[11px] text-emerald-100/80 sm:grid-cols-3">
+          <div class="rounded-xl bg-emerald-500/10 p-3">
+            <div class="text-[10px] uppercase tracking-[0.16em] text-emerald-300/80">
+              每推荐 1 节点
+            </div>
+            <div class="mt-1 text-sm font-semibold text-emerald-100">
+              +500 NST
+            </div>
+          </div>
+          <div class="rounded-xl bg-emerald-500/10 p-3">
+            <div class="text-[10px] uppercase tracking-[0.16em] text-emerald-300/80">
+              结算方式
+            </div>
+            <div class="mt-1 text-sm font-semibold text-emerald-100">
+              币上线统一发放
+            </div>
+          </div>
+          <div class="rounded-xl bg-emerald-500/10 p-3">
+            <div class="text-[10px] uppercase tracking-[0.16em] text-emerald-300/80">
+              记录形式
+            </div>
+            <div class="mt-1 text-sm font-semibold text-emerald-100">
+              链上推荐关系 & 统计面板
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-[11px] leading-relaxed text-slate-500">
+        提示：本页面为节点招募 & 推荐奖励的 UI 示意，具体规则（含锁仓周期、分润逻辑、推荐上限等）以后续公布的正式白皮书与智能合约为准。
+        请仅通过官方指定的链接参与。
+      </p>
+    </div>
+
+    <!-- 右侧：图片 + 钱包 + 金额输入 + 发起交易 + 推荐按钮 -->
+    <div class="flex flex-col gap-4 rounded-2xl border border-sky-500/40 bg-slate-950/85 p-5 lg:p-6">
+      <!-- 图片：加入就赚大钱的氛围图（你后面换成自己的） -->
+      <div class="overflow-hidden rounded-2xl border border-slate-800/80 bg-slate-900/80">
+        <img
+          src="https://via.placeholder.com/640x360.png?text=Join+Node+%3D+Big+Profit"
+          alt="加入节点 · 抢占早期收益机会"
+          class="h-40 w-full object-cover lg:h-44">
+      </div>
+
+      <!-- 按钮1：连接钱包（始终放第一个） -->
+      <button
+        class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-sky-900/50 transition hover:brightness-110 active:scale-[0.98]"
+        id="btn-connect-wallet">
+        连接钱包 · Connect Wallet
+      </button>
+
+      <!-- 金额 & 链/币种 选择区域（现在只开放 BSC/USDT） -->
+      <div class="space-y-3 rounded-2xl border border-slate-800 bg-slate-950/90 p-4">
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <!-- 链选择 -->
+          <div class="w-full">
+            <label class="flex items-center justify-between text-[11px] text-slate-400">
+              <span>选择链 / Chain</span>
+              <span class="text-[10px] text-slate-500">当前开放 BSC</span>
+            </label>
+            <div class="mt-1 flex items-center gap-2 rounded-xl border border-sky-500/40 bg-slate-900/80 px-3 py-2.5 text-xs text-slate-100">
+              <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
+              <span class="font-semibold">BSC</span>
+              <span class="text-[11px] text-slate-400">Binance Smart Chain</span>
+            </div>
+          </div>
+
+          <!-- 币种选择 -->
+          <div class="w-full">
+            <label class="flex items-center justify-between text-[11px] text-slate-400">
+              <span>选择币种 / Token</span>
+              <span class="text-[10px] text-slate-500">当前开放 USDT</span>
+            </label>
+            <div class="mt-1 flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-slate-900/80 px-3 py-2.5 text-xs text-slate-100">
+              <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
+              <span class="font-semibold">USDT</span>
+              <span class="text-[11px] text-slate-400">BEP-20</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 金额输入：默认 2000 U -->
+        <div>
+          <label for="node-amount" class="flex items-center justify-between text-[11px] text-slate-400">
+            <span>节点金额 / Amount</span>
+            <span class="text-[10px] text-slate-500">当前阶段固定 2000 U / 地址</span>
+          </label>
+          <div class="mt-1 flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900/80 px-3 py-2">
+            <input
+              id="node-amount"
+              type="number"
+              inputmode="decimal"
+              class="w-full bg-transparent text-sm text-slate-50 outline-none placeholder:text-slate-500"
+              value="2000"
+              min="2000"
+              step="1" />
+            <span class="text-xs font-semibold text-slate-300">USDT</span>
+          </div>
+          <p class="mt-1 text-[10px] text-slate-500">
+            你也可以保留输入框，后期改为「最低 2000 U，可自定义更高金额」。
+          </p>
+        </div>
+      </div>
+
+      <!-- 成为节点：发起链上交易按钮（预留真实调用位置） -->
+      <button
+        class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-900/50 transition hover:brightness-110 active:scale-[0.98]"
+        id="btn-become-node"
+        data-chain="bsc"
+        data-token="usdt"
+        data-amount-default="2000">
+        成为节点 · 发起链上交易
+      </button>
+
+      <!-- 推荐相关按钮 -->
+      <div class="space-y-2.5">
+        <button
+          class="flex w-full items-center justify-center gap-2 rounded-xl border border-sky-500/60 bg-slate-900/80 px-4 py-2.5 text-xs font-medium text-sky-200 hover:bg-slate-900"
+          id="btn-copy-ref">
+          复制我的节点推荐链接
+        </button>
+        <button
+          class="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900/80 px-4 py-2.5 text-xs font-medium text-slate-200 hover:border-slate-500 hover:bg-slate-900/90"
+          id="btn-view-node-info">
+          查看我的节点身份与推荐奖励
+        </button>
+      </div>
+
+      <!-- 简易状态小面板（数据以后用 Web3 填） -->
+      <div class="mt-1 space-y-1.5 rounded-2xl border border-slate-800 bg-slate-950/90 p-3 text-[11px] text-slate-400">
+        <div class="flex items-center justify-between">
+          <span>已招募节点数：</span>
+          <span class="font-mono text-sky-300">-- / 限量</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span>我当前地址节点状态：</span>
+          <span class="font-mono text-amber-300">未加入</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span>我成功推荐的节点数：</span>
+          <span class="font-mono text-emerald-300">0</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span>预计可领取 NST（推荐）：</span>
+          <span class="font-mono text-emerald-300">0 NST</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
     <!-- ===========================================
           期权订单大厅（整个页面）
     ============================================ -->
