@@ -1470,7 +1470,7 @@
     支持 NST · 捐赠
   </a>
 
-  <!-- 简单交互脚本：移动端菜单 / 连接钱包 / 捐赠交易 -->
+    <!-- 简单交互脚本：移动端菜单 / 连接钱包 / 捐赠交易 / 节点模块 -->
   <script>
     // ====== 移动端菜单 ======
     const btn = document.getElementById('mobileMenuBtn');
@@ -1481,7 +1481,9 @@
       });
     }
 
-    // ====== 钱包连接 & 状态 ======
+    // ==============================
+    // 全局钱包状态
+    // ==============================
     let currentAccount = null;
 
     function shortAddress(addr) {
@@ -1491,7 +1493,12 @@
 
     function updateWalletButtons() {
       const text = shortAddress(currentAccount);
-      const ids = ['connectWalletBtn', 'connectWalletBtnMobile', 'donateConnectBtn'];
+      const ids = [
+        'connectWalletBtn',
+        'connectWalletBtnMobile',
+        'donateConnectBtn',
+        'btn-connect-wallet'    // 节点模块里的按钮
+      ];
       ids.forEach((id) => {
         const el = document.getElementById(id);
         if (el) el.textContent = text;
@@ -1515,13 +1522,20 @@
       }
     }
 
-    ['connectWalletBtn', 'connectWalletBtnMobile', 'donateConnectBtn'].forEach((id) => {
+    // 绑定所有“连接钱包”按钮
+    [
+      'connectWalletBtn',
+      'connectWalletBtnMobile',
+      'donateConnectBtn',
+      'btn-connect-wallet'
+    ].forEach((id) => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener('click', connectWallet);
       }
     });
 
+    // 监听账号切换
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', (accounts) => {
         currentAccount = accounts[0] || null;
@@ -1529,76 +1543,81 @@
       });
     }
 
-    // BSC 上的 USDT（Binance-Peg USDT）
-const USDT_BSC_ADDRESS = '0x55d398326f99059ff775485246999027b3197955';
-// 精简版 ERC20 ABI，只保留 transfer
-const ERC20_ABI = [
-  "function transfer(address to, uint256 amount) public returns (bool)"
-];
+    // ==============================
+    // 常量：USDT 合约 & 捐赠地址
+    // ==============================
 
-    // ====== 捐赠逻辑（使用当前网络主币，如 BNB） ======
-    const DONATION_ADDRESS = '0xd140287e013df5c1eb2996661a86d2e6169b9467'; // TODO: 在这里填你的收款地址
+    // BSC 上的 Binance-Peg USDT 合约地址（18 位小数）
+    const USDT_BSC_ADDRESS = '0x55d398326f99059ff775485246999027b3197955';
 
-async function donate() {
-  const amountInput = document.getElementById('donateAmount');
-  const tokenSelect = document.getElementById('donateToken');
+    // 精简版 ERC20 ABI，只保留 transfer
+    const ERC20_ABI = [
+      "function transfer(address to, uint256 amount) public returns (bool)"
+    ];
 
-  if (!amountInput || !tokenSelect) return;
+    // 捐赠/节点收款地址（你后面改成多签 Gnosis Safe 也行，直接改这里）
+    const DONATION_ADDRESS = '0xd140287e013df5c1eb2996661a86d2e6169b9467';
 
-  const raw = (amountInput.value || '').trim();
-  const token = tokenSelect.value;
+    // 共用：发送 USDT 的函数（捐赠 & 成为节点都会用到）
+    async function sendUsdt(amountRaw) {
+      if (!window.ethereum) {
+        alert('请先安装钱包（MetaMask / TP / OKX 等），再进行操作。');
+        return;
+      }
+      if (!currentAccount) {
+        alert('请先连接钱包，再进行操作。');
+        return;
+      }
 
-  if (!raw || Number(raw) <= 0) {
-    alert('请输入正确的捐赠金额');
-    return;
-  }
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer   = provider.getSigner();
+        const usdt     = new ethers.Contract(USDT_BSC_ADDRESS, ERC20_ABI, signer);
 
-  if (!window.ethereum) {
-    alert('请先安装钱包（MetaMask / TP / OKX 等），再进行捐赠。');
-    return;
-  }
-  if (!currentAccount) {
-    alert('请先连接钱包，再进行捐赠。');
-    return;
-  }
+        // USDT 在 BSC 上是 18 位小数
+        const amount = ethers.utils.parseUnits(amountRaw, 18);
 
-  try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-
-    if (token === 'USDT') {
-      // 使用 USDT（BEP20）捐赠
-      const usdt = new ethers.Contract(USDT_BSC_ADDRESS, ERC20_ABI, signer);
-      // USDT 在 BSC 上是 18 位小数
-      const amount = ethers.utils.parseUnits(raw, 18);
-
-      const tx = await usdt.transfer(DONATION_ADDRESS, amount);
-      alert('USDT 捐赠交易已发送，Tx Hash：\n' + tx.hash);
-    } else if (token === 'NATIVE') {
-      // 预留逻辑：如果以后想开放 BNB 捐赠，可以用这个分支
-      const tx = await signer.sendTransaction({
-        to: DONATION_ADDRESS,
-        value: ethers.utils.parseEther(raw)
-      });
-      alert('主币捐赠交易已发送，Tx Hash：\n' + tx.hash);
-    } else {
-      alert('当前仅开放 USDT（BSC）捐赠，其他资产类型为预留选项。');
+        const tx = await usdt.transfer(DONATION_ADDRESS, amount);
+        alert('交易已发送，Tx Hash：\n' + tx.hash);
+      } catch (err) {
+        console.error(err);
+        const msg = err && (err.data && err.data.message ? err.data.message : err.message || String(err));
+        alert('交易失败：' + msg);
+      }
     }
 
-  } catch (err) {
-    console.error(err);
-    const msg = err && (err.data && err.data.message ? err.data.message : err.message || String(err));
-    alert('捐赠失败：' + msg);
-  }
-}
+    // ==============================
+    // 捐赠模块逻辑
+    // ==============================
 
+    async function donate() {
+      const amountInput = document.getElementById('donateAmount');
+      const tokenSelect = document.getElementById('donateToken');
+
+      if (!amountInput || !tokenSelect) return;
+
+      const raw   = (amountInput.value || '').trim();
+      const token = tokenSelect.value;
+
+      if (!raw || Number(raw) <= 0) {
+        alert('请输入正确的捐赠金额');
+        return;
+      }
+
+      if (token !== 'USDT') {
+        alert('当前仅开放 USDT（BSC）捐赠，其他选项为预留。');
+        return;
+      }
+
+      await sendUsdt(raw);
+    }
 
     const donateBtn = document.getElementById('donateSubmitBtn');
     if (donateBtn) {
       donateBtn.addEventListener('click', donate);
     }
 
-    // ====== 捐赠快捷金额填充 ======
+    // 捐赠快捷金额按钮
     const amountInput = document.getElementById('donateAmount');
     const quickButtons = document.querySelectorAll('.quick-amount');
     if (amountInput && quickButtons.length) {
@@ -1609,7 +1628,90 @@ async function donate() {
         });
       });
     }
+
+    // ==============================
+    // 节点模块逻辑（2000U 快速成为节点）
+    // ==============================
+
+    // 1）成为节点按钮：固定/最少 2000 U
+    async function becomeNode() {
+      const nodeAmountInput = document.getElementById('node-amount');
+      if (!nodeAmountInput) return;
+
+      const raw = (nodeAmountInput.value || '').trim();
+      const num = Number(raw);
+
+      if (!raw || isNaN(num)) {
+        alert('请输入节点金额');
+        return;
+      }
+      if (num < 2000) {
+        alert('当前阶段成为节点至少需要 2000 USDT / 地址');
+        return;
+      }
+
+      // 这里只是“特殊档位捐赠”，逻辑上等于给同一个地址转 USDT
+      await sendUsdt(raw);
+    }
+
+    const btnBecomeNode = document.getElementById('btn-become-node');
+    if (btnBecomeNode) {
+      btnBecomeNode.addEventListener('click', becomeNode);
+    }
+
+    // 2）复制我的节点推荐链接：https://nst.finance?ref=钱包地址
+    async function copyReferralLink() {
+      if (!currentAccount) {
+        alert('请先连接钱包，再复制推荐链接。');
+        return;
+      }
+
+      // 使用当前页面域名 + ref 参数
+      const base = window.location.origin || 'https://nst.finance';
+      const link = base + '?ref=' + currentAccount.toLowerCase();
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(link);
+          alert('已复制推荐链接：\n' + link);
+        } catch (err) {
+          console.error(err);
+          alert('复制失败，请手动复制：\n' + link);
+        }
+      } else {
+        // 兼容老浏览器
+        prompt('复制下面的推荐链接：', link);
+      }
+    }
+
+    const btnCopyRef = document.getElementById('btn-copy-ref');
+    if (btnCopyRef) {
+      btnCopyRef.addEventListener('click', copyReferralLink);
+    }
+
+    // 3）查看我的节点身份与推荐奖励（目前先做占位，未来接后台/链上数据）
+    function viewNodeInfo() {
+      if (!currentAccount) {
+        alert('请先连接钱包，再查看节点信息。');
+        return;
+      }
+
+      alert(
+        '当前版本暂未接入真实统计后台。\n\n' +
+        '后续这里会展示：\n' +
+        '· 你是否已成为节点\n' +
+        '· 你成功推荐的节点数量\n' +
+        '· 对应的 NST 奖励记录\n' +
+        '· 以及一个专属统计面板链接。'
+      );
+    }
+
+    const btnViewNodeInfo = document.getElementById('btn-view-node-info');
+    if (btnViewNodeInfo) {
+      btnViewNodeInfo.addEventListener('click', viewNodeInfo);
+    }
   </script>
+
 </body>
 </html>
 
